@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class NetworkManagerCustomIntegration : NetworkManager
 {
+    public GameObject disk;
+    
     public struct PlayerConnectMessage : NetworkMessage {
         public string data;
     }
@@ -19,9 +21,6 @@ public class NetworkManagerCustomIntegration : NetworkManager
     public override void OnClientConnect(NetworkConnection conn)
     {
         base.OnClientConnect(conn);
-
-        // call this to use this gameobject as the primary controller
-        //NetworkServer.AddPlayerForConnection(conn, gameobject);
 
         PlayerConnectMessage msg = new PlayerConnectMessage {
             data = "Ok"
@@ -43,5 +42,12 @@ public class NetworkManagerCustomIntegration : NetworkManager
 
         // call this to use this gameobject as the primary controller
         NetworkServer.AddPlayerForConnection(conn, g);
+    }
+
+    public void SpawnProj(Vector3 pos, Quaternion rot, Vector3 dir) {
+        GameObject g = Instantiate(disk, pos, rot);
+        g.GetComponent<BounceIntegration>().setTarget(dir);
+        
+        NetworkServer.Spawn(g);
     }
 }
