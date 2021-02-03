@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 90436d1883e1a1e478f8224b4eb21cb9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -182,7 +182,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95b0300d958bf164d8f599ca7e6d07b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawn: {fileID: 0}
+  syncMode: 0
+  syncInterval: 0.1
   prefabBall: {fileID: 6167758324627768053, guid: c9b800d797a2afd4e9b2e69d53102b36,
     type: 3}
   speed: 0
