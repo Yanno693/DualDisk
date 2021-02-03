@@ -27,10 +27,15 @@ public class Bounce : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if(collision.gameObject.tag == "Player")
+        {
+            Debug.Log("Touché");
+            Destroy(gameObject);
+        }
+
         if(nb_rebond <= max_rebond)
         {
             var direction = Vector3.Reflect(target.normalized, collision.contacts[0].normal);
-            Debug.Log(direction);
 
             target = direction;
             rb.velocity = target;
