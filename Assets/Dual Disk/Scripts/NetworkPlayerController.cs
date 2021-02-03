@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class NetworkPlayerController : NetworkBehaviour
 {
     protected CharacterController characterController;
     public Camera currentCamera;
@@ -51,24 +52,61 @@ public class PlayerController : MonoBehaviour
             v.x * Mathf.Sin(rad) + v.y * Mathf.Cos(rad)
         );
     }
+
+    public override void OnStartAuthority()
+    {
+        base.OnStartAuthority();
+
+        if(isLocalPlayer) {
+            initCamera();
+        }
+    }
+
+    public void initCamera() {
+
+        if(currentCamera is null) {
+            Camera cam = FindObjectOfType<Camera>();
+            Debug.Log("Camera ? On va voir : " + cam);
+            currentCamera = cam;
+        }
+        
+        transform.position = new Vector3(0,5,0);
+        Cinemachine.CinemachineFreeLook c = currentCamera.gameObject.GetComponent<Cinemachine.CinemachineFreeLook>();
+        Debug.Log(c);
+
+        c.m_LookAt = transform.GetChild(0).transform;
+        c.m_Follow = transform;
+    }
     
     // Start is called before the first frame update
     void Start()
     {
+        if(currentCamera is null) {
+            Camera cam = FindObjectOfType<Camera>();
+            Debug.Log("Camera ? On va voir : " + cam);
+            currentCamera = cam;
+        }
+        
         characterController = GetComponent<CharacterController>();
 
         movementSpeed = 25.0f;
         rotationSpeed = 5.0f;
 
         mouvementY = 0.0f;
+
+        //currentCamera = FindObjectOfType<Camera>();
+        Debug.Log(currentCamera);
+        
+        if(isLocalPlayer) {
+            initCamera();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        //FightingMovement();
-
-        //if(Input.GetButton("Jump"))
-            //Debug.Log("Jump !");
+        if(isLocalPlayer) {
+            FightingMovement();
+        }
     }
 }
