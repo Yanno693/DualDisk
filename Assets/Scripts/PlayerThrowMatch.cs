@@ -33,7 +33,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
         if(isLocalPlayer) { 
             if(Input.GetButtonDown("Fire1")) {
                 Transform camera_target = transform.GetChild(0);
-                Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position + new Vector3(0,2.0f,0)).normalized;
+                Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
 
                 CmdDirac(transform.position + direction , transform.rotation, direction);
             }
