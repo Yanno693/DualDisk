@@ -27,7 +27,10 @@ public class NetworkPlayerController : NetworkBehaviour
         float angleBetween = Vector2.SignedAngle(Vector2.up, directionForward) * Mathf.Deg2Rad;
         Vector2 directionRotation = Vec2Rotate(directionInput, angleBetween);
 
-        mouvementY -= 6.0f * Time.deltaTime;
+        if(characterController.isGrounded)
+            mouvementY = 0.0f;
+        else
+            mouvementY -= 6.0f * Time.deltaTime;
 
         if(Input.GetButton("Jump") && characterController.isGrounded) {
             Debug.Log("Jump !");
@@ -70,7 +73,7 @@ public class NetworkPlayerController : NetworkBehaviour
             currentCamera = cam;
         }
         
-        transform.position = new Vector3(0,5,0);
+        //transform.position = new Vector3(0,5,0);
         Cinemachine.CinemachineFreeLook c = currentCamera.gameObject.GetComponent<Cinemachine.CinemachineFreeLook>();
         Debug.Log(c);
 
