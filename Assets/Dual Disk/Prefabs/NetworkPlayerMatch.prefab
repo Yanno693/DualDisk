@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1974540167121921153}
   - component: {fileID: 5660860403754006945}
   - component: {fileID: 8491669185466479368}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: NetworkPlayerMatch
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -193,7 +193,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 712126600997218000}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CameraTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}

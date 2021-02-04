@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 7106782805577092948}
   - component: {fileID: 6424672682656571023}
   - component: {fileID: -7043651037131649356}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SphereMatch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 6167758324627768053}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.01, z: 0}
-  m_LocalScale: {x: 0.53807, y: 0.18672106, z: 0.53807}
+  m_LocalScale: {x: 0.8505273, y: 0.12442048, z: 0.8505273}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -161,5 +161,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  speed: 25
+  speed: 35
   max_rebond: 5
