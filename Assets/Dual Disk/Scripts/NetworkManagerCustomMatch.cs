@@ -36,6 +36,9 @@ public class NetworkManagerCustomMatch : NetworkManager
         // playerPrefab is the one assigned in the inspector in Network
         // Manager but you can use different prefabs per race for example
         Camera c = FindObjectOfType<Camera>();
+        c.GetComponent<Cinemachine.CinemachineBrain>().enabled = true;
+        c.GetComponent<Cinemachine.CinemachineFreeLook>().enabled = true;
+
         GameObject g = Instantiate<GameObject>(playerPrefab);
         g.GetComponent<NetworkPlayerController>().currentCamera = c;
         //Debug.Log(gameObject.GetComponent<NetworkPlayerController>().currentCamera);
@@ -66,8 +69,9 @@ public class NetworkManagerCustomMatch : NetworkManager
 
     public void spawnPlayers() {
         GameObject[] l = GameObject.FindGameObjectsWithTag("Player");
-        l[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(0, 100, -5));
-        l[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(0, 100, 5));
+        
+        l[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(0, 3, -8));
+        l[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(0, 3, 8));
     }
 
     public void resetHealth() {

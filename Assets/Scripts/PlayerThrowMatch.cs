@@ -8,7 +8,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
     private NetworkManagerCustomMatch networkManager;
     
     [Command]
-    public void CmdDirac(Vector3 pos, Quaternion rot, Vector3 dir) {
+    public void CmdThrow(Vector3 pos, Quaternion rot, Vector3 dir) {
                 //FindObjectOfType<NetworkManagerCustomMatch>().SpawnProj(pos, rot, dir);
 
         networkManager.SpawnDisk(pos, rot, dir);
@@ -16,8 +16,10 @@ public class PlayerThrowMatch : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcMove(Vector3 pos) {
-        this.transform.position = pos;
-        GetComponent<PlayerController>().mouvementY = 0.0f;
+        this.GetComponent<NetworkPlayerController>().mouvementY = 0.0f;
+        GetComponent<NetworkTransform>().ServerTeleport(pos);
+        //this.transform.position = pos;
+
     }
 
     public override void OnStartClient()
@@ -33,9 +35,9 @@ public class PlayerThrowMatch : NetworkBehaviour {
         if(isLocalPlayer) { 
             if(Input.GetButtonDown("Fire1")) {
                 Transform camera_target = transform.GetChild(0);
-                Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position + new Vector3(0,2.0f,0)).normalized;
+                Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
 
-                CmdDirac(transform.position + direction , transform.rotation, direction);
+                CmdThrow(transform.position + direction * 1.5f , transform.rotation, direction);
             }
         }
     }
