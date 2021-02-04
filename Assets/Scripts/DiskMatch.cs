@@ -43,8 +43,9 @@ public class DiskMatch : NetworkBehaviour
         {
             Debug.Log("Touché");
 
-
-            //Destroy(gameObject);
+            if(isServer) {
+                FindObjectOfType<NetworkManagerCustomMatch>().isTouched(collision.gameObject);
+            }
             CmdDestroyDisk(gameObject);
         }
 
