@@ -16,8 +16,10 @@ public class PlayerThrowMatch : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcMove(Vector3 pos) {
-        this.transform.position = pos;
-        GetComponent<PlayerController>().mouvementY = 0.0f;
+        this.GetComponent<NetworkPlayerController>().mouvementY = 0.0f;
+        GetComponent<NetworkTransform>().ServerTeleport(pos);
+        //this.transform.position = pos;
+
     }
 
     public override void OnStartClient()
