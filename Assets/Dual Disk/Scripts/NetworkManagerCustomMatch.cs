@@ -6,6 +6,8 @@ using UnityEngine;
 public class NetworkManagerCustomMatch : NetworkManager
 {
     public GameObject disk;
+
+    private int p1Score, p2Score, p1Health, p2Health;
     
     public struct PlayerConnectMessage : NetworkMessage {
         public string data;
@@ -68,8 +70,40 @@ public class NetworkManagerCustomMatch : NetworkManager
         l[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(0, 100, 5));
     }
 
-    public void initMatchData(){
+    public void resetHealth() {
+        p1Health = 3;
+        p2Health = 3;
+    }
 
+    public void isTouched(GameObject g) {
+        GameObject[] l = GameObject.FindGameObjectsWithTag("Player");
+
+        if(l[0] == g) {
+            p1Health--;
+        } else {
+            p2Health--;
+        }
+
+        if(p1Health == 0) {
+            p2Score++;
+            resetHealth();
+            spawnPlayers();
+        }
+
+        if(p2Health == 0) {
+            p1Score++;
+            resetHealth();
+            spawnPlayers();
+        }
+
+        Debug.Log("P1 :" + p1Health + " P2 : " + p2Health);
+    }
+
+    public void initMatchData(){
+        p1Health = 3;
+        p1Health = 3;
+        p1Score = 0;
+        p2Score = 0;
     }
 
     public void startMatch() {
