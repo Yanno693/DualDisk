@@ -30,11 +30,11 @@ public class NetworkPlayerController : NetworkBehaviour
         if(characterController.isGrounded)
             mouvementY = 0.0f;
         else
-            mouvementY -= 6.0f * Time.deltaTime;
+            mouvementY -= 5.5f * Time.deltaTime;
 
         if(Input.GetButton("Jump") && characterController.isGrounded) {
             Debug.Log("Jump !");
-            mouvementY = 1.5f;
+            mouvementY = 1.8f;
         }
 
         //characterController.SimpleMove(new Vector3(directionRotation.x, jump, directionRotation.y) * finalSpeed * Time.deltaTime * 500.0f);

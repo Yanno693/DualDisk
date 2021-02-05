@@ -70,8 +70,8 @@ public class NetworkManagerCustomMatch : NetworkManager
     public void spawnPlayers() {
         GameObject[] l = GameObject.FindGameObjectsWithTag("Player");
         
-        l[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(0, 3, -8));
-        l[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(0, 3, 8));
+        l[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0));
+        l[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0));
     }
 
     public void resetHealth() {
