@@ -33,7 +33,7 @@ public class AnimationScript : NetworkBehaviour
                 animator.Play("Throw_Revert", animator.GetLayerIndex("Throw Layer"), 0.0f);
             }
 
-            if(Input.GetKeyDown(KeyCode.Space))
+            if(Input.GetButtonDown("Jump"))
             {
                 jumpWeight = 1.0f;
                 animator.Play("Full_Jump", animator.GetLayerIndex("Jump Layer"), 0.0f);
