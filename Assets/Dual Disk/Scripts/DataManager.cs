@@ -6,10 +6,10 @@ using UnityEngine.UI;
 
 public class DataManager : NetworkBehaviour
 {
-    [SyncVar (hook = nameof(RpcUpdateHud_P1Health))] public int p1Health;
-    [SyncVar (hook = nameof(RpcUpdateHud_P2Health))] public int p2Health;
-    [SyncVar (hook = nameof(RpcUpdateHud_P1Score))] public int p1Score;
-    [SyncVar (hook = nameof(RpcUpdateHud_P2Score))] public int p2Score;
+    [SyncVar (hook = nameof(RpcUpdateHud_P1Health))] public int p1Health = -1;
+    [SyncVar (hook = nameof(RpcUpdateHud_P2Health))] public int p2Health = -1;
+    [SyncVar (hook = nameof(RpcUpdateHud_P1Score))] public int p1Score = -1;
+    [SyncVar (hook = nameof(RpcUpdateHud_P2Score))] public int p2Score = -1;
 
     [ClientRpc]
     public void RpcUpdateHud_P1Health(int oldValue, int newValue) {
@@ -27,12 +27,16 @@ public class DataManager : NetworkBehaviour
 
     [ClientRpc]
     public void RpcUpdateHud_P1Score(int oldValue, int newValue) {
-
+        GameObject p1s = GameObject.Find("P1Score");
+        Debug.Log(p1s);
+        p1s.GetComponent<Text>().text = newValue.ToString();
     }
 
     [ClientRpc]
     public void RpcUpdateHud_P2Score(int oldValue, int newValue) {
-    
+        GameObject p2s = GameObject.Find("P2Score");
+        Debug.Log(p2s);
+        p2s.GetComponent<Text>().text = newValue.ToString();
     }
     
     public void ResetHealth() {
@@ -55,8 +59,10 @@ public class DataManager : NetworkBehaviour
             Debug.Log("Init Match");
             p1Health = 3;
             p2Health = 3;
-            p1Score = 0;
-            p2Score = 0;
+            p1Score = 1;
+            p1Score--;
+            p2Score = 1;
+            p2Score--;
         } else {
             CmdInitMatchData();
         }
@@ -112,7 +118,7 @@ public class DataManager : NetworkBehaviour
     public void AddP2Score () {
         if(isServer) {
             Debug.Log("Add P2 Score");
-            p1Score++;
+            p2Score++;
         } else {
             CmdAddP2Score();
         }

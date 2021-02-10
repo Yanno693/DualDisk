@@ -9,6 +9,7 @@ public class NetworkManagerCustomMatch : NetworkManager
 
     private bool hasStarted;
     private float serverTime;
+    private GameObject[] players;
 
     private DataManager datas;
     
@@ -64,9 +65,10 @@ public class NetworkManagerCustomMatch : NetworkManager
     }
 
     // Permet a un joueur de lancer un disque
-    public void SpawnDisk(Vector3 pos, Quaternion rot, Vector3 dir) {
+    public void SpawnDisk(Vector3 pos, Quaternion rot, Vector3 dir, GameObject player) {
         GameObject g = Instantiate(disk, pos, rot);
         g.GetComponent<DiskMatch>().setTarget(dir);
+        g.GetComponent<DiskMatch>().setOwner(player);
         
         NetworkServer.Spawn(g);
     }
@@ -76,12 +78,18 @@ public class NetworkManagerCustomMatch : NetworkManager
         NetworkServer.Destroy(g);
     }
 
+    public void DestroyAllDisk() {
+        GameObject[] disks = GameObject.FindGameObjectsWithTag("Disk");
+
+        foreach(GameObject disk in disks)
+            NetworkServer.Destroy(disk);
+    }
+
     // Replace les joueurs en position initiale
     public void spawnPlayers() {
-        GameObject[] l = GameObject.FindGameObjectsWithTag("Player");
-        
-        l[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0), Quaternion.Euler(1, 0, 0));
-        l[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0), Quaternion.Euler(-1, 0, 0));
+        players[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0), Quaternion.Euler(1, 0, 0));
+        players[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0), Quaternion.Euler(-1, 0, 0));
+        DestroyAllDisk();
     }
 
     public void resetHealth() {
@@ -90,13 +98,11 @@ public class NetworkManagerCustomMatch : NetworkManager
 
     public void isTouched(GameObject g) {
         if(hasStarted) {
-            GameObject[] l = GameObject.FindGameObjectsWithTag("Player");
 
-            if(l[0] == g) {
+            if(players[0] == g)
                 datas.RemoveP1Health();
-            } else {
+            else
                 datas.RemoveP2Health();
-            }
 
             if(datas.p1Health == 0) {
                 datas.ResetHealth();
@@ -109,9 +115,11 @@ public class NetworkManagerCustomMatch : NetworkManager
                 datas.AddP1Score();
                 spawnPlayers();
             }
-
-            Debug.Log("P1 :" + datas.p1Health + " P2 : " + datas.p2Health);
         }
+    }
+
+    public void initMaterials() {
+        players[0].GetComponent<NetworkPlayerController>().RpcChangeMaterials();
     }
 
     public void initMatchData() {
@@ -119,10 +127,13 @@ public class NetworkManagerCustomMatch : NetworkManager
     }
 
     public void startMatch() {
+        players = GameObject.FindGameObjectsWithTag("Player");
         datas = FindObjectOfType<DataManager>();
+
         hasStarted = true;
         Debug.Log("Le match peut commencer !");
         spawnPlayers();
         initMatchData();
+        initMaterials();
     }
 }

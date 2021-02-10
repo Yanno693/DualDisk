@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class NetworkPlayerController : NetworkBehaviour
 {
+    public Material blueHead;
+    public Material blueBody;
+    
     protected CharacterController characterController;
     public Camera currentCamera;
     public float movementSpeed;
@@ -14,9 +17,6 @@ public class NetworkPlayerController : NetworkBehaviour
     private void FightingMovement()
     {
         float finalSpeed = movementSpeed;
-
-        //if (Input.GetButton("Run"))
-            //finalSpeed *= 2.0f;
 
         Vector3 forward = transform.position - currentCamera.transform.position;
         forward.y = 0;
@@ -33,7 +33,6 @@ public class NetworkPlayerController : NetworkBehaviour
             mouvementY -= 5.5f * Time.deltaTime;
 
         if(Input.GetButton("Jump") && characterController.isGrounded) {
-            Debug.Log("Jump !");
             mouvementY = 1.8f;
         }
 
@@ -69,7 +68,6 @@ public class NetworkPlayerController : NetworkBehaviour
 
         if(currentCamera is null) {
             Camera cam = FindObjectOfType<Camera>();
-            Debug.Log("Camera ? On va voir : " + cam);
             currentCamera = cam;
         }
         
@@ -86,7 +84,6 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         if(currentCamera is null) {
             Camera cam = FindObjectOfType<Camera>();
-            Debug.Log("Camera ? On va voir : " + cam);
             currentCamera = cam;
         }
         
@@ -103,6 +100,12 @@ public class NetworkPlayerController : NetworkBehaviour
         if(isLocalPlayer) {
             initCamera();
         }
+    }
+
+    [ClientRpc]
+    public void RpcChangeMaterials() {
+        Material[] mats = new Material[]{blueHead, blueBody};
+        transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials = mats;
     }
 
     // Update is called once per frame

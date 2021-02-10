@@ -10,11 +10,16 @@ public class DiskMatch : NetworkBehaviour
 
     private Rigidbody rb;
     private Vector3 target;
-    private int nb_rebond;  
+    private int nb_rebond; 
+    private GameObject owner; 
 
     // Start is called before the first frame update
     public void setTarget(in Vector3 _target) {
         this.target = _target;
+    }
+
+    public void setOwner(in GameObject _owner) {
+        this.owner = _owner;
     }
 
     void Start()
@@ -39,12 +44,12 @@ public class DiskMatch : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Player")
-        {
-            Debug.Log("Touché");
-
+        if(collision.gameObject.tag == "Player") {
             if(isServer) {
-                FindObjectOfType<NetworkManagerCustomMatch>().isTouched(collision.gameObject);
+                if(collision.gameObject == owner)
+                    owner.GetComponent<PlayerThrowMatch>().RpcAddDisk();
+                else
+                    FindObjectOfType<NetworkManagerCustomMatch>().isTouched(collision.gameObject);
             }
             CmdDestroyDisk(gameObject);
         }

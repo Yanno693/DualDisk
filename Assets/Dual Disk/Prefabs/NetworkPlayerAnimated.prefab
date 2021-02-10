@@ -2082,6 +2082,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  blueHead: {fileID: 2100000, guid: fb43fcdb3edac62419eb8b296660390e, type: 2}
+  blueBody: {fileID: 2100000, guid: 21ae8e11a61221f419e18c04db4a838c, type: 2}
   currentCamera: {fileID: 0}
   movementSpeed: 0
   rotationSpeed: 0
@@ -2118,6 +2120,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  diskDelay: 3
+  nbDisk: 3
 --- !u!114 &-6719840785804796391
 MonoBehaviour:
   m_ObjectHideFlags: 0
