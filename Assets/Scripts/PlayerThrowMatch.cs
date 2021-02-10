@@ -15,11 +15,19 @@ public class PlayerThrowMatch : NetworkBehaviour {
     }
 
     [ClientRpc]
-    public void RpcMove(Vector3 pos) {
+    //[Client]
+    public void RpcMove(Vector3 pos, Quaternion rot) {
         this.GetComponent<NetworkPlayerController>().mouvementY = 0.0f;
-        GetComponent<NetworkTransform>().ServerTeleport(pos);
-        //this.transform.position = pos;
+        GetComponent<NetworkTransform>().ServerTeleport(pos, rot);
 
+        setCamera(rot);
+    }
+
+    void setCamera(Quaternion rot) {
+        if(isLocalPlayer) {
+            GetComponent<NetworkPlayerController>().currentCamera.GetComponent<Cinemachine.CinemachineFreeLook>().m_XAxis.Value = 90.0f * rot.eulerAngles.x;
+            GetComponent<NetworkPlayerController>().currentCamera.GetComponent<Cinemachine.CinemachineFreeLook>().m_YAxis.Value = 0.8f;
+        }
     }
 
     public override void OnStartClient()
@@ -37,7 +45,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
                 Transform camera_target = transform.GetChild(0);
                 Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
 
-                CmdThrow(transform.position + direction * 1.5f + new Vector3(0, 3.2f, 0) , Quaternion.identity, direction);
+                CmdThrow(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
             }
         }
     }
