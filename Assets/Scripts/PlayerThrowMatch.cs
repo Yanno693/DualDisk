@@ -37,7 +37,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
                 Transform camera_target = transform.GetChild(0);
                 Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
 
-                CmdThrow(transform.position + direction * 1.5f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
+                CmdThrow(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
             }
         }
     }
