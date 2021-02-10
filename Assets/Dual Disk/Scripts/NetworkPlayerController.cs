@@ -77,6 +77,8 @@ public class NetworkPlayerController : NetworkBehaviour
 
         c.m_LookAt = transform.GetChild(0).transform;
         c.m_Follow = transform;
+
+        Cursor.lockState = CursorLockMode.Locked;
     }
     
     // Start is called before the first frame update
