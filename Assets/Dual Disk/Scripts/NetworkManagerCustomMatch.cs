@@ -7,7 +7,10 @@ public class NetworkManagerCustomMatch : NetworkManager
 {
     public GameObject disk;
 
-    private int p1Score, p2Score, p1Health, p2Health;
+    private bool hasStarted;
+    private float serverTime;
+
+    private DataManager datas;
     
     public struct PlayerConnectMessage : NetworkMessage {
         public string data;
@@ -15,6 +18,7 @@ public class NetworkManagerCustomMatch : NetworkManager
 
     public override void OnStartServer() {
         base.OnStartServer();
+        hasStarted = false;
 
         NetworkServer.RegisterHandler<PlayerConnectMessage>(OnCreatePlayer);
     }
@@ -30,9 +34,20 @@ public class NetworkManagerCustomMatch : NetworkManager
         conn.Send(msg);
     }
 
+    void Update() {
+        if(NetworkServer.connections.Count == 2) {
+            serverTime += Time.deltaTime;
+        }
+
+        if(serverTime > 3 && !hasStarted) {
+            hasStarted = true;
+            startMatch();
+        }
+    }
+
+    // Attribue un prefab de Joueur à la personne qui se connecte
     void OnCreatePlayer(NetworkConnection conn, PlayerConnectMessage message)
     {
-        //Debug.Log("Jello ?");
         // playerPrefab is the one assigned in the inspector in Network
         // Manager but you can use different prefabs per race for example
         Camera c = FindObjectOfType<Camera>();
@@ -44,17 +59,11 @@ public class NetworkManagerCustomMatch : NetworkManager
         //Debug.Log(gameObject.GetComponent<NetworkPlayerController>().currentCamera);
 
         // call this to use this gameobject as the primary controller
-        Debug.Log("Connexion de " + conn.connectionId);
+        Debug.Log("Connexion du client " + conn.connectionId + ", Nombre de joueurs : " + NetworkServer.connections.Count);
         NetworkServer.AddPlayerForConnection(conn, g);
-
-        if(NetworkServer.connections.Count == 2) {
-            startMatch();
-        }
-
-        //NetworkServer.
-
     }
 
+    // Permet a un joueur de lancer un disque
     public void SpawnDisk(Vector3 pos, Quaternion rot, Vector3 dir) {
         GameObject g = Instantiate(disk, pos, rot);
         g.GetComponent<DiskMatch>().setTarget(dir);
@@ -62,55 +71,56 @@ public class NetworkManagerCustomMatch : NetworkManager
         NetworkServer.Spawn(g);
     }
 
+    // Permet a un disque de disparaitre
     public void DestroyDisk(GameObject g) {
-        //NetworkServer.Destroy(NetworkIdentity.spawned[_netId].gameObject);
         NetworkServer.Destroy(g);
     }
 
+    // Replace les joueurs en position initiale
     public void spawnPlayers() {
         GameObject[] l = GameObject.FindGameObjectsWithTag("Player");
         
-        l[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0));
-        l[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0));
+        l[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0), Quaternion.Euler(1, 0, 0));
+        l[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0), Quaternion.Euler(-1, 0, 0));
     }
 
     public void resetHealth() {
-        p1Health = 3;
-        p2Health = 3;
+        datas.ResetHealth();
     }
 
     public void isTouched(GameObject g) {
-        GameObject[] l = GameObject.FindGameObjectsWithTag("Player");
+        if(hasStarted) {
+            GameObject[] l = GameObject.FindGameObjectsWithTag("Player");
 
-        if(l[0] == g) {
-            p1Health--;
-        } else {
-            p2Health--;
+            if(l[0] == g) {
+                datas.RemoveP1Health();
+            } else {
+                datas.RemoveP2Health();
+            }
+
+            if(datas.p1Health == 0) {
+                datas.ResetHealth();
+                datas.AddP2Score();
+                spawnPlayers();
+            }
+
+            if(datas.p2Health == 0) {
+                datas.ResetHealth();
+                datas.AddP1Score();
+                spawnPlayers();
+            }
+
+            Debug.Log("P1 :" + datas.p1Health + " P2 : " + datas.p2Health);
         }
-
-        if(p1Health == 0) {
-            p2Score++;
-            resetHealth();
-            spawnPlayers();
-        }
-
-        if(p2Health == 0) {
-            p1Score++;
-            resetHealth();
-            spawnPlayers();
-        }
-
-        Debug.Log("P1 :" + p1Health + " P2 : " + p2Health);
     }
 
-    public void initMatchData(){
-        p1Health = 3;
-        p1Health = 3;
-        p1Score = 0;
-        p2Score = 0;
+    public void initMatchData() {
+        datas.InitMatchData();
     }
 
     public void startMatch() {
+        datas = FindObjectOfType<DataManager>();
+        hasStarted = true;
         Debug.Log("Le match peut commencer !");
         spawnPlayers();
         initMatchData();

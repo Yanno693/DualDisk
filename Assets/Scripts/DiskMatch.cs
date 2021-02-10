@@ -27,7 +27,7 @@ public class DiskMatch : NetworkBehaviour
     void Update()
     {
         rb.velocity = target * speed;
-        transform.LookAt(target, Vector3.up);
+        transform.LookAt(transform.position + target, Vector3.up);
     }
 
     //[Command]
