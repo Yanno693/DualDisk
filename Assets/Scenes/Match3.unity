@@ -935,12 +935,12 @@ PrefabInstance:
     - target: {fileID: 6328102830671658840, guid: 11a1e30d34577ad4493fa0d596ebd02e,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000274049
+      value: 0.00000028972065
       objectReference: {fileID: 0}
     - target: {fileID: 6328102830671658840, guid: 11a1e30d34577ad4493fa0d596ebd02e,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 3.2169214e-14
+      value: 3.4011846e-14
       objectReference: {fileID: 0}
     - target: {fileID: 6328102830671658840, guid: 11a1e30d34577ad4493fa0d596ebd02e,
         type: 3}
@@ -1309,18 +1309,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 964243350, guid: b2dca3560cf700b47b301898f1d80504, type: 3}
-      propertyPath: m_Intensity
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 964243350, guid: b2dca3560cf700b47b301898f1d80504, type: 3}
-      propertyPath: m_SpotAngle
-      value: 144.44867
-      objectReference: {fileID: 0}
-    - target: {fileID: 964243350, guid: b2dca3560cf700b47b301898f1d80504, type: 3}
-      propertyPath: m_InnerSpotAngle
-      value: 65.97117
-      objectReference: {fileID: 0}
     - target: {fileID: 87659442999562709, guid: b2dca3560cf700b47b301898f1d80504,
         type: 3}
       propertyPath: m_RootOrder

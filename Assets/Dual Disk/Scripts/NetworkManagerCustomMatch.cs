@@ -69,8 +69,13 @@ public class NetworkManagerCustomMatch : NetworkManager
         GameObject g = Instantiate(disk, pos, rot);
         g.GetComponent<DiskMatch>().setTarget(dir);
         g.GetComponent<DiskMatch>().setOwner(player);
+
         
         NetworkServer.Spawn(g);
+        
+        if(hasStarted)
+            if(player == players[0])
+                g.GetComponent<DiskMatch>().RpcSetMaterial();
     }
 
     // Permet a un disque de disparaitre

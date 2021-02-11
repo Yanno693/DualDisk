@@ -149,6 +149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  trailBlue: {fileID: 2100000, guid: bcd9b0e5fe5d03f4087815a487d36c64, type: 2}
   speed: 50
   max_rebond: 5
 --- !u!114 &2779704472914752538
