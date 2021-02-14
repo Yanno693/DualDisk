@@ -19,6 +19,20 @@ public class PlayerThrowMatch : NetworkBehaviour {
         networkManager.SpawnDisk(pos, rot, dir, gameObject);
     }
 
+    [Command]
+    public void CmdThrowFloor(Vector3 pos, Quaternion rot, Vector3 dir) {
+                //FindObjectOfType<NetworkManagerCustomMatch>().SpawnProj(pos, rot, dir);
+
+        networkManager.SpawnFloorDisk(pos, rot, dir, gameObject);
+    }
+
+    [Command]
+    public void CmdThrowTarget(Vector3 pos, Quaternion rot, Vector3 dir) {
+                //FindObjectOfType<NetworkManagerCustomMatch>().SpawnProj(pos, rot, dir);
+
+        networkManager.SpawnTargetDisk(pos, rot, dir, gameObject);
+    }
+
     [ClientRpc]
     public void RpcMove(Vector3 pos, Quaternion rot) {
         this.GetComponent<NetworkPlayerController>().mouvementY = 0.0f;
@@ -71,6 +85,32 @@ public class PlayerThrowMatch : NetworkBehaviour {
                         Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
 
                         CmdThrow(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
+                        delays[i] = 0.0f;
+                        break;
+                    }
+                }
+            }
+
+            if(Input.GetButtonDown("Fire2")) {
+                for(int i = 0; i < nbDisk; i++) {
+                    if(delays[i] >= diskDelay) {
+                        Transform camera_target = transform.GetChild(0);
+                        Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
+
+                        CmdThrowFloor(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
+                        delays[i] = 0.0f;
+                        break;
+                    }
+                }
+            }
+
+            if(Input.GetButtonDown("Fire3")) {
+                for(int i = 0; i < nbDisk; i++) {
+                    if(delays[i] >= diskDelay) {
+                        Transform camera_target = transform.GetChild(0);
+                        Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
+
+                        CmdThrowTarget(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
                         delays[i] = 0.0f;
                         break;
                     }

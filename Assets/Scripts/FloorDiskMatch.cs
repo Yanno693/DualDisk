@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DiskMatch : NetworkBehaviour
+public class FloorDiskMatch : NetworkBehaviour
 {
     public Material trailBlue;
     public float speed;
@@ -60,11 +60,15 @@ public class DiskMatch : NetworkBehaviour
     {
         if(collision.gameObject.tag == "Player") {
             if(isServer) {
-                if(collision.gameObject == owner)
-                    owner.GetComponent<PlayerThrowMatch>().RpcAddDisk();
-                else
+                if(collision.gameObject != owner)
                     FindObjectOfType<NetworkManagerCustomMatch>().isTouched(collision.gameObject);
             }
+            CmdDestroyDisk(gameObject);
+        }
+
+        if(collision.gameObject.tag == "Hexagon") {
+            Debug.Log("J'ai touché un hexagon");
+            collision.gameObject.GetComponent<HexagonScript>().RpcDestroy();
             CmdDestroyDisk(gameObject);
         }
 

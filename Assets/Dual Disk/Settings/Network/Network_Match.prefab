@@ -85,9 +85,13 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs:
   - {fileID: 6260978696449636309, guid: 620c973c00228774ba8828eff2a82630, type: 3}
+  - {fileID: 6260978696449636309, guid: 425955df397b3b74a8466cb0fef3784f, type: 3}
+  - {fileID: 6260978696449636309, guid: d882f5448039ec940ad67c1659b02bba, type: 3}
   disk: {fileID: 6260978696449636309, guid: 620c973c00228774ba8828eff2a82630, type: 3}
-  blueHead: {fileID: 2100000, guid: fb43fcdb3edac62419eb8b296660390e, type: 2}
-  blueBody: {fileID: 2100000, guid: 21ae8e11a61221f419e18c04db4a838c, type: 2}
+  floorDisk: {fileID: 6260978696449636309, guid: 425955df397b3b74a8466cb0fef3784f,
+    type: 3}
+  targetDisk: {fileID: 6260978696449636309, guid: d882f5448039ec940ad67c1659b02bba,
+    type: 3}
 --- !u!114 &1349291688319743097
 MonoBehaviour:
   m_ObjectHideFlags: 0

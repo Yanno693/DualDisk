@@ -6,6 +6,8 @@ using UnityEngine;
 public class NetworkManagerCustomMatch : NetworkManager
 {
     public GameObject disk;
+    public GameObject floorDisk;
+    public GameObject targetDisk;
 
     private bool hasStarted;
     private float serverTime;
@@ -69,13 +71,41 @@ public class NetworkManagerCustomMatch : NetworkManager
         GameObject g = Instantiate(disk, pos, rot);
         g.GetComponent<DiskMatch>().setTarget(dir);
         g.GetComponent<DiskMatch>().setOwner(player);
-
-        
+  
         NetworkServer.Spawn(g);
         
         if(hasStarted)
             if(player == players[0])
                 g.GetComponent<DiskMatch>().RpcSetMaterial();
+    }
+
+    public void SpawnFloorDisk(Vector3 pos, Quaternion rot, Vector3 dir, GameObject player) {
+        GameObject g = Instantiate(floorDisk, pos, rot);
+        g.GetComponent<FloorDiskMatch>().setTarget(dir);
+        g.GetComponent<FloorDiskMatch>().setOwner(player);
+  
+        NetworkServer.Spawn(g);
+        
+        if(hasStarted)
+            if(player == players[0])
+                g.GetComponent<FloorDiskMatch>().RpcSetMaterial();
+    }
+
+    public void SpawnTargetDisk(Vector3 pos, Quaternion rot, Vector3 dir, GameObject player) {
+        GameObject g = Instantiate(targetDisk, pos, rot);
+        g.GetComponent<TargetDiskMatch>().setTarget(dir);
+        g.GetComponent<TargetDiskMatch>().setOwner(player);
+
+        NetworkServer.Spawn(g);
+        
+        if(hasStarted) {
+            if(player == players[0]) {
+                g.GetComponent<TargetDiskMatch>().RpcSetMaterial();
+                g.GetComponent<TargetDiskMatch>().setPlayerTarget(players[1].transform);
+            } else {
+                g.GetComponent<TargetDiskMatch>().setPlayerTarget(players[0].transform);
+            }
+        }
     }
 
     // Permet a un disque de disparaitre
@@ -90,11 +120,19 @@ public class NetworkManagerCustomMatch : NetworkManager
             NetworkServer.Destroy(disk);
     }
 
+    public void RespawnAllHexagon() {
+        GameObject[] hexagons = GameObject.FindGameObjectsWithTag("Hexagon");
+
+        foreach(GameObject hexa in hexagons)
+            hexa.GetComponent<HexagonScript>().RpcActivate();
+    }
+
     // Replace les joueurs en position initiale
     public void spawnPlayers() {
         players[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0), Quaternion.Euler(1, 0, 0));
         players[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0), Quaternion.Euler(-1, 0, 0));
         DestroyAllDisk();
+        RespawnAllHexagon();
     }
 
     public void resetHealth() {
