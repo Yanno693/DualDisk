@@ -38,6 +38,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
     public void RpcMove(Vector3 pos, Quaternion rot) {
         fallen = false;
         this.GetComponent<NetworkPlayerController>().mouvementY = 0.0f;
+        this.GetComponent<NetworkPlayerController>().isDodging = false;
         GetComponent<NetworkTransform>().ServerTeleport(pos, rot);
 
         setCamera(rot);

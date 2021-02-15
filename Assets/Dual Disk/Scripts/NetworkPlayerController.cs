@@ -12,7 +12,10 @@ public class NetworkPlayerController : NetworkBehaviour
     public Camera currentCamera;
     public float movementSpeed;
     public float rotationSpeed;
-    public float mouvementY;
+    [HideInInspector] public float mouvementY;
+    [HideInInspector] public bool isDodging;
+    private float dodgeTime;
+    private Vector3 dodgeDirection;
 
     private void FightingMovement()
     {
@@ -21,30 +24,57 @@ public class NetworkPlayerController : NetworkBehaviour
         Vector3 forward = transform.position - currentCamera.transform.position;
         forward.y = 0;
         Vector2 directionForward = new Vector2(forward.x, forward.z).normalized;
+        Vector2 directionRight = new Vector2(forward.z, forward.x).normalized;
 
         Vector2 directionInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
         float angleBetween = Vector2.SignedAngle(Vector2.up, directionForward) * Mathf.Deg2Rad;
         Vector2 directionRotation = Vec2Rotate(directionInput, angleBetween);
 
-        if(characterController.isGrounded)
+        if(characterController.isGrounded) {
             mouvementY = 0.0f;
+            if(Input.GetButton("Dodge") && !isDodging) {
+                dodgeTime = 0.0f;
+                isDodging = true;
+
+                Vector2 currentPos = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                List<KeyValuePair<float, Vector2>> dodgeDictionary = new List<KeyValuePair<float, Vector2>>();
+                dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2( 0   , 0   )).magnitude, new Vector2( 0   , 0   )));
+                dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2( 0.5f, 0   )).magnitude, new Vector2( 0.5f, 0   )));
+                dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2(-0.5f, 0   )).magnitude, new Vector2(-0.5f, 0   )));
+                dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2( 0   , 0.5f)).magnitude, new Vector2( 0   , 0.5f)));
+                dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2( 0   ,-0.5f)).magnitude, new Vector2( 0   ,-0.5f)));
+                dodgeDictionary.Sort((x, y) => x.Key.CompareTo(y.Key));
+                
+                Vector2 dir = dodgeDictionary[0].Value * 1.6f;
+                Vector3 f = new Vector3(directionForward.x, 0, directionForward.y)  * finalSpeed * Time.deltaTime * dir.y;
+                Vector3 r = new Vector3(directionForward.y, 0, -directionForward.x)  * finalSpeed * Time.deltaTime * dir.x;
+                dodgeDirection = f + r;
+            }
+        }
         else
             mouvementY -= 5.5f * Time.deltaTime;
 
-        if(Input.GetButton("Jump") && characterController.isGrounded) {
+        if(Input.GetButton("Jump") && characterController.isGrounded && !isDodging) {
             mouvementY = 1.8f;
+            GetComponent<AnimationScript>().doJump();
         }
 
         //characterController.SimpleMove(new Vector3(directionRotation.x, jump, directionRotation.y) * finalSpeed * Time.deltaTime * 500.0f);
-        characterController.Move(new Vector3(directionRotation.x, mouvementY, directionRotation.y) * finalSpeed * Time.deltaTime);
+        if(!isDodging)
+            characterController.Move(new Vector3(directionRotation.x, mouvementY, directionRotation.y) * finalSpeed * Time.deltaTime);
+        else
+            characterController.Move(dodgeDirection);
+            //characterController.Move(new Vector3(directionRotation.x * dodgeDirection.y, mouvementY, directionRotation.y * dodgeDirection.x) * finalSpeed * Time.deltaTime);
         //characterController.Sim
 
-        transform.rotation = Quaternion.Lerp(
-            transform.rotation,
-            Quaternion.LookRotation(new Vector3(directionForward.x, 0, directionForward.y)),
-            Time.deltaTime * rotationSpeed
-        );            
+        if(!isDodging) {
+            transform.rotation = Quaternion.Lerp(
+                transform.rotation,
+                Quaternion.LookRotation(new Vector3(directionForward.x, 0, directionForward.y)),
+                Time.deltaTime * rotationSpeed
+            );            
+        }
     }
 
     public static Vector2 Vec2Rotate(Vector2 v, float rad)
@@ -95,6 +125,7 @@ public class NetworkPlayerController : NetworkBehaviour
         rotationSpeed = 5.0f;
 
         mouvementY = 0.0f;
+        isDodging = false;
 
         //currentCamera = FindObjectOfType<Camera>();
         Debug.Log(currentCamera);
@@ -115,6 +146,12 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         if(isLocalPlayer) {
             FightingMovement();
+
+            if(isDodging) {
+                dodgeTime += Time.deltaTime;
+                if(dodgeTime > 1.1f)
+                    isDodging = false;
+            }
         }
     }
 }
