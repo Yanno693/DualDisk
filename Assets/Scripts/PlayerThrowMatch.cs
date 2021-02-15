@@ -116,6 +116,10 @@ public class PlayerThrowMatch : NetworkBehaviour {
                     }
                 }
             }
+
+            if(transform.position.y < -150) {
+                networkManager.hasFallen(gameObject);
+            }
         }
     }
 }

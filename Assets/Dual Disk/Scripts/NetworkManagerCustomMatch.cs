@@ -80,25 +80,27 @@ public class NetworkManagerCustomMatch : NetworkManager
     }
 
     public void SpawnFloorDisk(Vector3 pos, Quaternion rot, Vector3 dir, GameObject player) {
-        GameObject g = Instantiate(floorDisk, pos, rot);
-        g.GetComponent<FloorDiskMatch>().setTarget(dir);
-        g.GetComponent<FloorDiskMatch>().setOwner(player);
-  
-        NetworkServer.Spawn(g);
-        
-        if(hasStarted)
+        if (hasStarted) 
+        {
+            GameObject g = Instantiate(floorDisk, pos, rot);
+            g.GetComponent<FloorDiskMatch>().setTarget(dir);
+            g.GetComponent<FloorDiskMatch>().setOwner(player);
+    
+            NetworkServer.Spawn(g);
+            
             if(player == players[0])
                 g.GetComponent<FloorDiskMatch>().RpcSetMaterial();
+        }
     }
 
     public void SpawnTargetDisk(Vector3 pos, Quaternion rot, Vector3 dir, GameObject player) {
-        GameObject g = Instantiate(targetDisk, pos, rot);
-        g.GetComponent<TargetDiskMatch>().setTarget(dir);
-        g.GetComponent<TargetDiskMatch>().setOwner(player);
-
-        NetworkServer.Spawn(g);
-        
         if(hasStarted) {
+            GameObject g = Instantiate(targetDisk, pos, rot);
+            g.GetComponent<TargetDiskMatch>().setTarget(dir);
+            g.GetComponent<TargetDiskMatch>().setOwner(player);
+
+            NetworkServer.Spawn(g);
+            
             if(player == players[0]) {
                 g.GetComponent<TargetDiskMatch>().RpcSetMaterial();
                 g.GetComponent<TargetDiskMatch>().setPlayerTarget(players[1].transform);
@@ -129,10 +131,11 @@ public class NetworkManagerCustomMatch : NetworkManager
 
     // Replace les joueurs en position initiale
     public void spawnPlayers() {
-        players[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0), Quaternion.Euler(1, 0, 0));
-        players[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0), Quaternion.Euler(-1, 0, 0));
         DestroyAllDisk();
         RespawnAllHexagon();
+        
+        players[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0), Quaternion.Euler(1, 0, 0));
+        players[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0), Quaternion.Euler(-1, 0, 0));
     }
 
     public void resetHealth() {
@@ -159,6 +162,16 @@ public class NetworkManagerCustomMatch : NetworkManager
                 spawnPlayers();
             }
         }
+    }
+
+    public void hasFallen (GameObject g) {
+        if(players[0] == g)
+            datas.AddP2Score();
+        else
+            datas.AddP1Score();
+        
+        datas.ResetHealth();
+        spawnPlayers();
     }
 
     public void initMaterials() {

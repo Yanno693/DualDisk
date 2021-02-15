@@ -8,6 +8,7 @@ public class AnimationScript : NetworkBehaviour
     private Animator animator;
     private float throwWeight;
     private float jumpWeight;
+    private float fallWeight;
     //private float dodgeWeight;
 
     // Start is called before the first frame update
@@ -16,6 +17,7 @@ public class AnimationScript : NetworkBehaviour
         animator = GetComponent<Animator>();
         throwWeight = 0;
         jumpWeight = 0;
+        fallWeight = 0;
         //dodgeWeight = 0;
     }
 
@@ -29,6 +31,7 @@ public class AnimationScript : NetworkBehaviour
             animator.SetFloat("Y", Input.GetAxis("Vertical"));
             animator.SetLayerWeight(animator.GetLayerIndex("Throw Layer"), throwWeight);
             animator.SetLayerWeight(animator.GetLayerIndex("Jump Layer"), jumpWeight);
+            animator.SetBool("Fall", transform.position.y < -5);
             //animator.SetLayerWeight(animator.GetLayerIndex("Dodge Layer"), dodgeWeight);
 
             if(Input.GetButtonDown("Fire1")) {
