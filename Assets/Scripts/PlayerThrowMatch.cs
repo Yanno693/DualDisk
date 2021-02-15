@@ -9,6 +9,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
     public int nbDisk;
 
     private float[] delays;
+    private bool fallen;
     
     private NetworkManagerCustomMatch networkManager;
     
@@ -35,6 +36,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcMove(Vector3 pos, Quaternion rot) {
+        fallen = false;
         this.GetComponent<NetworkPlayerController>().mouvementY = 0.0f;
         GetComponent<NetworkTransform>().ServerTeleport(pos, rot);
 
@@ -66,10 +68,16 @@ public class PlayerThrowMatch : NetworkBehaviour {
 
         networkManager = FindObjectOfType<NetworkManagerCustomMatch>();
         delays = new float[nbDisk];
+        fallen = false;
 
         for(int i = 0; i < nbDisk; i++)
             delays[i] = diskDelay;
     }
+
+    [Command]
+    public void CmdHasFallen(GameObject g) {
+        networkManager.hasFallen(g);
+    } 
 
     // Update is called once per frame
     void Update()
@@ -118,7 +126,13 @@ public class PlayerThrowMatch : NetworkBehaviour {
             }
 
             if(transform.position.y < -150) {
-                networkManager.hasFallen(gameObject);
+                if(!networkManager)
+                    networkManager = FindObjectOfType<NetworkManagerCustomMatch>();
+
+                if(!fallen) {
+                    fallen = true;
+                    CmdHasFallen(gameObject);
+                }
             }
         }
     }
