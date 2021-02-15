@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class DataManager : NetworkBehaviour
 {
@@ -11,32 +12,50 @@ public class DataManager : NetworkBehaviour
     [SyncVar (hook = nameof(RpcUpdateHud_P1Score))] public int p1Score = -1;
     [SyncVar (hook = nameof(RpcUpdateHud_P2Score))] public int p2Score = -1;
 
+    public TextMeshProUGUI p1OrangeScoreText;
+    public TextMeshProUGUI p2OrangeScoreText;
+    public TextMeshProUGUI p1BlueScoreText;
+    public TextMeshProUGUI p2BlueScoreText;
+
+    public TextMeshProUGUI p1OrangeHealthText;
+    public TextMeshProUGUI p2OrangeHealthText;
+    public TextMeshProUGUI p1BlueHealthText;
+    public TextMeshProUGUI p2BlueHealthText;
+
     [ClientRpc]
     public void RpcUpdateHud_P1Health(int oldValue, int newValue) {
-        GameObject p1s = GameObject.Find("P1Health");
-        Debug.Log(p1s);
-        p1s.GetComponent<Text>().text = newValue.ToString();
+        //GameObject p1s = GameObject.Find("P1Health");
+        //Debug.Log(p1s);
+        //p1s.GetComponent<Text>().text = newValue.ToString();
+        p1OrangeHealthText.text = newValue.ToString();
+        p1BlueHealthText.text = newValue.ToString();
     }
 
     [ClientRpc]
     public void RpcUpdateHud_P2Health(int oldValue, int newValue) {
-        GameObject p2s = GameObject.Find("P2Health");
-        Debug.Log(p2s);
-        p2s.GetComponent<Text>().text = newValue.ToString();
+        //GameObject p2s = GameObject.Find("P2Health");
+        //Debug.Log(p2s);
+        //p2s.GetComponent<Text>().text = newValue.ToString();
+        p2OrangeHealthText.text = newValue.ToString();
+        p2BlueHealthText.text = newValue.ToString();
     }
 
     [ClientRpc]
     public void RpcUpdateHud_P1Score(int oldValue, int newValue) {
-        GameObject p1s = GameObject.Find("P1Score");
-        Debug.Log(p1s);
-        p1s.GetComponent<Text>().text = newValue.ToString();
+        //GameObject p1s = GameObject.Find("P1Score");
+        //Debug.Log(p1s);
+        //p1s.GetComponent<Text>().text = newValue.ToString();
+        p1OrangeScoreText.text = newValue.ToString();
+        p1BlueScoreText.text = newValue.ToString();
     }
 
     [ClientRpc]
     public void RpcUpdateHud_P2Score(int oldValue, int newValue) {
-        GameObject p2s = GameObject.Find("P2Score");
-        Debug.Log(p2s);
-        p2s.GetComponent<Text>().text = newValue.ToString();
+        //GameObject p2s = GameObject.Find("P2Score");
+        //Debug.Log(p2s);
+        //p2s.GetComponent<Text>().text = newValue.ToString();
+        p2OrangeScoreText.text = newValue.ToString();
+        p2BlueScoreText.text = newValue.ToString();
     }
     
     public void ResetHealth() {
