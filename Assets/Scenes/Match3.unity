@@ -978,12 +978,12 @@ PrefabInstance:
     - target: {fileID: 6328102830671658840, guid: 11a1e30d34577ad4493fa0d596ebd02e,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000318389
+      value: 0.0000003194648
       objectReference: {fileID: 0}
     - target: {fileID: 6328102830671658840, guid: 11a1e30d34577ad4493fa0d596ebd02e,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 3.738288e-14
+      value: 3.7509373e-14
       objectReference: {fileID: 0}
     - target: {fileID: 6328102830671658840, guid: 11a1e30d34577ad4493fa0d596ebd02e,
         type: 3}
@@ -1003,7 +1003,7 @@ PrefabInstance:
     - target: {fileID: 6328102830671658841, guid: 11a1e30d34577ad4493fa0d596ebd02e,
         type: 3}
       propertyPath: field of view
-      value: 70
+      value: 65
       objectReference: {fileID: 0}
     - target: {fileID: 6328102830671658842, guid: 11a1e30d34577ad4493fa0d596ebd02e,
         type: 3}
@@ -1013,7 +1013,22 @@ PrefabInstance:
     - target: {fileID: 6328102830671658843, guid: 11a1e30d34577ad4493fa0d596ebd02e,
         type: 3}
       propertyPath: m_Lens.FieldOfView
-      value: 70
+      value: 65
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328102830671658843, guid: 11a1e30d34577ad4493fa0d596ebd02e,
+        type: 3}
+      propertyPath: m_Orbits.Array.data[0].m_Radius
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328102830671658843, guid: 11a1e30d34577ad4493fa0d596ebd02e,
+        type: 3}
+      propertyPath: m_Orbits.Array.data[1].m_Radius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328102830671658843, guid: 11a1e30d34577ad4493fa0d596ebd02e,
+        type: 3}
+      propertyPath: m_Orbits.Array.data[2].m_Radius
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6328102830671658847, guid: 11a1e30d34577ad4493fa0d596ebd02e,
         type: 3}
