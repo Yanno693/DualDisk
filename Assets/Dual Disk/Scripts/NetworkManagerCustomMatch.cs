@@ -8,6 +8,7 @@ public class NetworkManagerCustomMatch : NetworkManager
     public GameObject disk;
     public GameObject floorDisk;
     public GameObject targetDisk;
+    public GameObject menu;
 
     private bool hasStarted;
     private bool roundHasStarted;
@@ -65,8 +66,6 @@ public class NetworkManagerCustomMatch : NetworkManager
         // playerPrefab is the one assigned in the inspector in Network
         // Manager but you can use different prefabs per race for example
         Camera c = FindObjectOfType<Camera>();
-        c.GetComponent<Cinemachine.CinemachineBrain>().enabled = true;
-        c.GetComponent<Cinemachine.CinemachineFreeLook>().enabled = true;
 
         GameObject g = Instantiate<GameObject>(playerPrefab);
         g.GetComponent<NetworkPlayerController>().currentCamera = c;
@@ -146,7 +145,9 @@ public class NetworkManagerCustomMatch : NetworkManager
         RespawnAllHexagon();
         roundHasStarted = false;
         roundStartTime = 0.0f;
-        
+
+        Camera c = FindObjectOfType<Camera>();
+
         players[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0), Quaternion.Euler(1, 0, 0));
         players[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0), Quaternion.Euler(-1, 0, 0));
     }

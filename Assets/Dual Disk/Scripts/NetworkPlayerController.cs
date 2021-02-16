@@ -113,6 +113,15 @@ public class NetworkPlayerController : NetworkBehaviour
         Cinemachine.CinemachineFreeLook c = currentCamera.gameObject.GetComponent<Cinemachine.CinemachineFreeLook>();
         Debug.Log(c);
 
+
+        Menu menu = FindObjectOfType<Menu>();
+        if(menu)
+            menu.gameObject.SetActive(false);
+
+       
+        c.GetComponent<Cinemachine.CinemachineFreeLook>().m_XAxis.m_InputAxisName = "Mouse X";
+        c.GetComponent<Cinemachine.CinemachineFreeLook>().m_YAxis.m_InputAxisName = "Mouse Y";
+
         c.m_LookAt = transform.GetChild(0).transform;
         c.m_Follow = transform;
 
