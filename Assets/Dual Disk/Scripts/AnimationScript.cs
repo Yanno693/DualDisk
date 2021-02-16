@@ -26,47 +26,42 @@ public class AnimationScript : NetworkBehaviour
         animator.Play("Full_Jump", animator.GetLayerIndex("Jump Layer"), 0.0f);
     }
 
+
+    public void doDodge(Vector2 currentPos) {
+        List<KeyValuePair<float, string>> dodgeDictionary = new List<KeyValuePair<float, string>>();
+        dodgeDictionary.Add(new KeyValuePair<float, string>((currentPos - new Vector2( 0   , 0   )).magnitude, "Dodge"));
+        dodgeDictionary.Add(new KeyValuePair<float, string>((currentPos - new Vector2( 0.5f, 0   )).magnitude, "Dodge Right"));
+        dodgeDictionary.Add(new KeyValuePair<float, string>((currentPos - new Vector2(-0.5f, 0   )).magnitude, "Dodge Left"));
+        dodgeDictionary.Add(new KeyValuePair<float, string>((currentPos - new Vector2( 0   , 0.5f)).magnitude, "Dodge Front" + ((int)Time.time % 2 == 0 ? "2" : "")));
+        dodgeDictionary.Add(new KeyValuePair<float, string>((currentPos - new Vector2( 0   ,-0.5f)).magnitude, "Dodge Back"));
+        
+        dodgeDictionary.Sort((x, y) => x.Key.CompareTo(y.Key));
+        GetComponent<NetworkAnimator>().SetTrigger(dodgeDictionary[0].Value);
+    }
+
     // Update is called once per frame
     void Update()
     {
         if(isLocalPlayer) {
             throwWeight -= Time.deltaTime;
             jumpWeight -= Time.deltaTime;
-            animator.SetFloat("X", Input.GetAxis("Horizontal"));
-            animator.SetFloat("Y", Input.GetAxis("Vertical"));
+            
+            if(GetComponent<NetworkPlayerController>().serverAllowMovement) {
+                animator.SetFloat("X", Input.GetAxis("Horizontal"));
+                animator.SetFloat("Y", Input.GetAxis("Vertical"));
+
+                if(Input.GetButtonDown("Fire1")) {
+                    throwWeight = 1.0f;
+                    animator.Play("Throw_Revert", animator.GetLayerIndex("Throw Layer"), 0.0f);
+                }
+            } else {
+                animator.SetFloat("X", 0);
+                animator.SetFloat("Y", 0);
+            }
+            
             animator.SetLayerWeight(animator.GetLayerIndex("Throw Layer"), throwWeight);
             animator.SetLayerWeight(animator.GetLayerIndex("Jump Layer"), jumpWeight);
             animator.SetBool("Fall", transform.position.y < -5);
-
-            if(Input.GetButtonDown("Fire1")) {
-                throwWeight = 1.0f;
-                animator.Play("Throw_Revert", animator.GetLayerIndex("Throw Layer"), 0.0f);
-            }
-
-            if (Input.GetButtonDown("Dodge"))
-            {
-                //SortedDictionary<float, string> dodgeDictionary = new SortedDictionary<float, string>();
-
-                Vector2 currentPos = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-                List<KeyValuePair<float, string>> dodgeDictionary = new List<KeyValuePair<float, string>>();
-                dodgeDictionary.Add(new KeyValuePair<float, string>((currentPos - new Vector2( 0   , 0   )).magnitude, "Dodge"));
-                dodgeDictionary.Add(new KeyValuePair<float, string>((currentPos - new Vector2( 0.5f, 0   )).magnitude, "Dodge Right"));
-                dodgeDictionary.Add(new KeyValuePair<float, string>((currentPos - new Vector2(-0.5f, 0   )).magnitude, "Dodge Left"));
-                dodgeDictionary.Add(new KeyValuePair<float, string>((currentPos - new Vector2( 0   , 0.5f)).magnitude, "Dodge Front" + ((int)Time.time % 2 == 0 ? "2" : "")));
-                dodgeDictionary.Add(new KeyValuePair<float, string>((currentPos - new Vector2( 0   ,-0.5f)).magnitude, "Dodge Back"));
-                
-                dodgeDictionary.Sort((x, y) => x.Key.CompareTo(y.Key));
-                animator.SetBool(dodgeDictionary[0].Value, true);
-            }
-            else
-            {
-                animator.SetBool("Dodge Right", false);
-                animator.SetBool("Dodge Left", false);
-                animator.SetBool("Dodge Front", false);
-                animator.SetBool("Dodge Front2", false);
-                animator.SetBool("Dodge Back", false);
-                animator.SetBool("Dodge", false);
-            }
         }
     }
 }

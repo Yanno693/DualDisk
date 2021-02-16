@@ -7,10 +7,13 @@ using TMPro;
 
 public class DataManager : NetworkBehaviour
 {
-    [SyncVar (hook = nameof(RpcUpdateHud_P1Health))] public int p1Health = -1;
-    [SyncVar (hook = nameof(RpcUpdateHud_P2Health))] public int p2Health = -1;
-    [SyncVar (hook = nameof(RpcUpdateHud_P1Score))] public int p1Score = -1;
-    [SyncVar (hook = nameof(RpcUpdateHud_P2Score))] public int p2Score = -1;
+    [HideInInspector] [SyncVar (hook = nameof(RpcUpdateHud_P1Health))] public int p1Health = -1;
+    [HideInInspector] [SyncVar (hook = nameof(RpcUpdateHud_P2Health))] public int p2Health = -1;
+    [HideInInspector] [SyncVar (hook = nameof(RpcUpdateHud_P1Score))] public int p1Score = -1;
+    [HideInInspector] [SyncVar (hook = nameof(RpcUpdateHud_P2Score))] public int p2Score = -1;
+
+    [HideInInspector] [SyncVar] public float roundCountdown;
+    [HideInInspector] [SyncVar (hook = nameof(RpcUpdateCountdown))] public int roundCountdownInt;
 
     public TextMeshProUGUI p1OrangeScoreText;
     public TextMeshProUGUI p2OrangeScoreText;
@@ -57,12 +60,23 @@ public class DataManager : NetworkBehaviour
         p2OrangeScoreText.text = newValue.ToString();
         p2BlueScoreText.text = newValue.ToString();
     }
+
+    [ClientRpc]
+    public void RpcUpdateCountdown(int oldValue, int newValue) {
+        GameObject p2s = GameObject.Find("Countdown");
+        Debug.Log(p2s);
+        p2s.GetComponent<TextMeshProUGUI>().text = newValue > 0 ? (newValue).ToString() : "";
+        //p2OrangeScoreText.text = newValue.ToString();
+        //p2BlueScoreText.text = newValue.ToString();
+    }
     
     public void ResetHealth() {
         if(isServer) {
             Debug.Log("Reset Health");
             p1Health = 3;
             p2Health = 3;
+            roundCountdownInt = 4;
+            roundCountdown = 4.0f;
         } else {
             CmdResetHealth();
         }
@@ -82,6 +96,8 @@ public class DataManager : NetworkBehaviour
             p1Score--;
             p2Score = 1;
             p2Score--;
+            roundCountdownInt = 4;
+            roundCountdown = 4.0f;
         } else {
             CmdInitMatchData();
         }
@@ -146,5 +162,30 @@ public class DataManager : NetworkBehaviour
     [Command]
     public void CmdAddP2Score() {
         AddP2Score();
+    }
+
+    public void UpdateCountdown () {
+        if(isServer) {
+            Debug.Log("UpdateCountdown");
+            roundCountdownInt--;
+        } else {
+            CmdAddP2Score();
+        }
+    }
+
+    [Command]
+    public void CmdUpdateCountdown () {
+        UpdateCountdown();
+    }
+
+    public void Update() {
+        if(isServer) {
+            if(roundCountdown > 0.0f)
+                roundCountdown -= Time.deltaTime;
+
+            if(roundCountdownInt > (int)roundCountdown) {
+                UpdateCountdown();
+            }
+        }
     }
 }

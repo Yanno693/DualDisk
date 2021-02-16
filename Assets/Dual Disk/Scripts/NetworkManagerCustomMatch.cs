@@ -10,7 +10,9 @@ public class NetworkManagerCustomMatch : NetworkManager
     public GameObject targetDisk;
 
     private bool hasStarted;
-    private float serverTime;
+    private bool roundHasStarted;
+    private float serverStartTime;
+    private float roundStartTime;
     private GameObject[] players;
 
     private DataManager datas;
@@ -39,12 +41,21 @@ public class NetworkManagerCustomMatch : NetworkManager
 
     void Update() {
         if(NetworkServer.connections.Count == 2) {
-            serverTime += Time.deltaTime;
+            serverStartTime += Time.deltaTime;
         }
 
-        if(serverTime > 3 && !hasStarted) {
+        if(serverStartTime > 3 && !hasStarted) {
             hasStarted = true;
             startMatch();
+        }
+
+        if(hasStarted && !roundHasStarted)
+            roundStartTime += Time.deltaTime;
+
+        if(!roundHasStarted && roundStartTime > 3.0f) {
+            roundHasStarted = true;
+            players[0].GetComponent<NetworkPlayerController>().RpcAllowMouvement();
+            players[1].GetComponent<NetworkPlayerController>().RpcAllowMouvement();
         }
     }
 
@@ -133,6 +144,8 @@ public class NetworkManagerCustomMatch : NetworkManager
     public void spawnPlayers() {
         DestroyAllDisk();
         RespawnAllHexagon();
+        roundHasStarted = false;
+        roundStartTime = 0.0f;
         
         players[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0), Quaternion.Euler(1, 0, 0));
         players[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0), Quaternion.Euler(-1, 0, 0));

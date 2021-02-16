@@ -17,6 +17,8 @@ public class NetworkPlayerController : NetworkBehaviour
     private float dodgeTime;
     private Vector3 dodgeDirection;
 
+    [HideInInspector] public bool serverAllowMovement;
+
     private void FightingMovement()
     {
         float finalSpeed = movementSpeed;
@@ -33,7 +35,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
         if(characterController.isGrounded) {
             mouvementY = 0.0f;
-            if(Input.GetButton("Dodge") && !isDodging) {
+            if(Input.GetButton("Dodge") && !isDodging && serverAllowMovement) {
                 dodgeTime = 0.0f;
                 isDodging = true;
 
@@ -45,6 +47,8 @@ public class NetworkPlayerController : NetworkBehaviour
                 dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2( 0   , 0.5f)).magnitude, new Vector2( 0   , 0.5f)));
                 dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2( 0   ,-0.5f)).magnitude, new Vector2( 0   ,-0.5f)));
                 dodgeDictionary.Sort((x, y) => x.Key.CompareTo(y.Key));
+
+                GetComponent<AnimationScript>().doDodge(dodgeDictionary[0].Value);
                 
                 Vector2 dir = dodgeDictionary[0].Value * 1.6f;
                 Vector3 f = new Vector3(directionForward.x, 0, directionForward.y)  * finalSpeed * Time.deltaTime * dir.y;
@@ -61,10 +65,14 @@ public class NetworkPlayerController : NetworkBehaviour
         }
 
         //characterController.SimpleMove(new Vector3(directionRotation.x, jump, directionRotation.y) * finalSpeed * Time.deltaTime * 500.0f);
-        if(!isDodging)
-            characterController.Move(new Vector3(directionRotation.x, mouvementY, directionRotation.y) * finalSpeed * Time.deltaTime);
-        else
-            characterController.Move(dodgeDirection);
+        if(serverAllowMovement) {
+            if(!isDodging)
+                characterController.Move(new Vector3(directionRotation.x, mouvementY, directionRotation.y) * finalSpeed * Time.deltaTime);
+            else
+                characterController.Move(dodgeDirection);
+        } else {
+            characterController.Move(new Vector3(0, mouvementY, 0) * finalSpeed * Time.deltaTime);
+        }
             //characterController.Move(new Vector3(directionRotation.x * dodgeDirection.y, mouvementY, directionRotation.y * dodgeDirection.x) * finalSpeed * Time.deltaTime);
         //characterController.Sim
 
@@ -114,6 +122,8 @@ public class NetworkPlayerController : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        serverAllowMovement = true;
+        
         if(currentCamera is null) {
             Camera cam = FindObjectOfType<Camera>();
             currentCamera = cam;
@@ -139,6 +149,20 @@ public class NetworkPlayerController : NetworkBehaviour
     public void RpcChangeMaterials() {
         Material[] mats = new Material[]{blueHead, blueBody};
         transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials = mats;
+    }
+
+    [ClientRpc]
+    public void RpcForbidMouvement() {
+        //if(isLocalPlayer) {
+            serverAllowMovement = false;
+        //}
+    }
+
+    [ClientRpc]
+    public void RpcAllowMouvement() {
+        //if(isLocalPlayer) {
+            serverAllowMovement = true;
+        //}
     }
 
     // Update is called once per frame

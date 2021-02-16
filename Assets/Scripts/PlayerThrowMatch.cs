@@ -39,7 +39,11 @@ public class PlayerThrowMatch : NetworkBehaviour {
         fallen = false;
         this.GetComponent<NetworkPlayerController>().mouvementY = 0.0f;
         this.GetComponent<NetworkPlayerController>().isDodging = false;
+        this.GetComponent<NetworkPlayerController>().RpcForbidMouvement();
+
+        this.GetComponent<CharacterController>().enabled = false;
         GetComponent<NetworkTransform>().ServerTeleport(pos, rot);
+        this.GetComponent<CharacterController>().enabled = true;
 
         setCamera(rot);
     }
@@ -87,41 +91,43 @@ public class PlayerThrowMatch : NetworkBehaviour {
             for(int i = 0; i < nbDisk; i++)
                 delays[i] += Time.deltaTime;
 
-            if(Input.GetButtonDown("Fire1")) {
-                for(int i = 0; i < nbDisk; i++) {
-                    if(delays[i] >= diskDelay) {
-                        Transform camera_target = transform.GetChild(0);
-                        Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
+            if(GetComponent<NetworkPlayerController>().serverAllowMovement) {
+                if(Input.GetButtonDown("Fire1")) {
+                    for(int i = 0; i < nbDisk; i++) {
+                        if(delays[i] >= diskDelay) {
+                            Transform camera_target = transform.GetChild(0);
+                            Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
 
-                        CmdThrow(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
-                        delays[i] = 0.0f;
-                        break;
+                            CmdThrow(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
+                            delays[i] = 0.0f;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if(Input.GetButtonDown("Fire2")) {
-                for(int i = 0; i < nbDisk; i++) {
-                    if(delays[i] >= diskDelay) {
-                        Transform camera_target = transform.GetChild(0);
-                        Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
+                if(Input.GetButtonDown("Fire2")) {
+                    for(int i = 0; i < nbDisk; i++) {
+                        if(delays[i] >= diskDelay) {
+                            Transform camera_target = transform.GetChild(0);
+                            Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
 
-                        CmdThrowFloor(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
-                        delays[i] = 0.0f;
-                        break;
+                            CmdThrowFloor(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
+                            delays[i] = 0.0f;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if(Input.GetButtonDown("Fire3")) {
-                for(int i = 0; i < nbDisk; i++) {
-                    if(delays[i] >= diskDelay) {
-                        Transform camera_target = transform.GetChild(0);
-                        Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
+                if(Input.GetButtonDown("Fire3")) {
+                    for(int i = 0; i < nbDisk; i++) {
+                        if(delays[i] >= diskDelay) {
+                            Transform camera_target = transform.GetChild(0);
+                            Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
 
-                        CmdThrowTarget(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
-                        delays[i] = 0.0f;
-                        break;
+                            CmdThrowTarget(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
+                            delays[i] = 0.0f;
+                            break;
+                        }
                     }
                 }
             }
