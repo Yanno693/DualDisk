@@ -60,7 +60,7 @@ public class DiskMatch : NetworkBehaviour
     }
 
     private void OnCollisionEnter(Collision collision)
-    {
+    {        
         if(collision.gameObject.tag == "Player") {
             if(isServer) {
                 if(collision.gameObject == owner)
@@ -69,20 +69,26 @@ public class DiskMatch : NetworkBehaviour
                     FindObjectOfType<NetworkManagerCustomMatch>().isTouched(collision.gameObject);
             }
             CmdDestroyDisk(gameObject);
-        }
+        } else {
 
-        if(nb_rebond <= max_rebond)
-        {
-            var direction = Vector3.Reflect(target.normalized, collision.contacts[0].normal);
+            FindObjectOfType<NetworkManagerCustomMatch>().SpawnCollisionParticle(
+            collision.contacts[0].point,
+            Quaternion.LookRotation(collision.contacts[0].normal, Vector3.up));
+            
+            if(nb_rebond <= max_rebond)
+            {
+                
+                var direction = Vector3.Reflect(target.normalized, collision.contacts[0].normal);
 
-            target = direction;
-            rb.velocity = target;
-            nb_rebond++;
-        }
-        else
-        {
-            //Destroy(gameObject);
-            CmdDestroyDisk(gameObject);
+                target = direction;
+                rb.velocity = target;
+                nb_rebond++;
+            }
+            else
+            {
+                //Destroy(gameObject);
+                CmdDestroyDisk(gameObject);
+            }
         }
         
     }

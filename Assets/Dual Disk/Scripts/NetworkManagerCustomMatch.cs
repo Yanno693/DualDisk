@@ -9,6 +9,7 @@ public class NetworkManagerCustomMatch : NetworkManager
     public GameObject floorDisk;
     public GameObject targetDisk;
     public GameObject menu;
+    public GameObject collisionParticle;
 
     private bool hasStarted;
     private bool roundHasStarted;
@@ -87,6 +88,12 @@ public class NetworkManagerCustomMatch : NetworkManager
         if(hasStarted)
             if(player == players[0])
                 g.GetComponent<DiskMatch>().RpcSetMaterial();
+    }
+
+    public void SpawnCollisionParticle(Vector3 pos, Quaternion rot) {
+        GameObject g = Instantiate(collisionParticle, pos, rot);
+        NetworkServer.Spawn(g);
+        g.GetComponent<ParticleSystem>().Play();
     }
 
     public void SpawnFloorDisk(Vector3 pos, Quaternion rot, Vector3 dir, GameObject player) {
