@@ -15,15 +15,15 @@ public class DataManager : NetworkBehaviour
     [HideInInspector] [SyncVar] public float roundCountdown;
     [HideInInspector] [SyncVar (hook = nameof(RpcUpdateCountdown))] public int roundCountdownInt;
 
-    public TextMeshProUGUI p1OrangeScoreText;
-    public TextMeshProUGUI p2OrangeScoreText;
-    public TextMeshProUGUI p1BlueScoreText;
-    public TextMeshProUGUI p2BlueScoreText;
-
     public TextMeshProUGUI p1OrangeHealthText;
     public TextMeshProUGUI p2OrangeHealthText;
     public TextMeshProUGUI p1BlueHealthText;
     public TextMeshProUGUI p2BlueHealthText;
+
+    public TextMeshProUGUI p1OrangeScoreText;
+    public TextMeshProUGUI p2OrangeScoreText;
+    public TextMeshProUGUI p1BlueScoreText;
+    public TextMeshProUGUI p2BlueScoreText;
 
     [ClientRpc]
     public void RpcUpdateHud_P1Health(int oldValue, int newValue) {
