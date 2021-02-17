@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class FloorDiskMatch : NetworkBehaviour
 {
-    public Material trailBlue;
     public float speed;
     public int max_rebond;
     private float current_life_time;
@@ -14,11 +13,6 @@ public class FloorDiskMatch : NetworkBehaviour
     private Vector3 target;
     private int nb_rebond; 
     private GameObject owner; 
-
-    [ClientRpc]
-    public void RpcSetMaterial() {
-        GetComponent<TrailRenderer>().material = trailBlue;
-    }
 
     // Start is called before the first frame update
     public void setTarget(in Vector3 _target) {

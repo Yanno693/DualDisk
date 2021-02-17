@@ -6,6 +6,7 @@ using UnityEngine;
 public class DiskMatch : NetworkBehaviour
 {
     public Material trailBlue;
+    public Material emissionBlue;
     public float speed;
     public int max_rebond;
     private float current_life_time;
@@ -18,6 +19,8 @@ public class DiskMatch : NetworkBehaviour
     [ClientRpc]
     public void RpcSetMaterial() {
         GetComponent<TrailRenderer>().material = trailBlue;
+        transform.GetChild(1).GetComponent<MeshRenderer>().material = emissionBlue;
+        transform.GetChild(2).GetComponent<MeshRenderer>().material = emissionBlue;
     }
 
     // Start is called before the first frame update

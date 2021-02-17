@@ -7,7 +7,7 @@ public class NetworkPlayerController : NetworkBehaviour
 {
     public Material blueHead;
     public Material blueBody;
-    
+    public Material emissionBlue;
     protected CharacterController characterController;
     public Camera currentCamera;
     public float movementSpeed;
@@ -154,10 +154,36 @@ public class NetworkPlayerController : NetworkBehaviour
         }
     }
 
+    private Transform FindDeepChild(Transform aParent, string aName)
+    {
+        Queue<Transform> queue = new Queue<Transform>();
+        queue.Enqueue(aParent);
+        while (queue.Count > 0)
+        {
+            var c = queue.Dequeue();
+            if (c.name == aName)
+                return c;
+            foreach(Transform t in c)
+                queue.Enqueue(t);
+        }
+        return null;
+    }
+
     [ClientRpc]
     public void RpcChangeMaterials() {
         Material[] mats = new Material[]{blueHead, blueBody};
         transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials = mats;
+
+        GameObject d1 = FindDeepChild(transform, "D1").gameObject;
+        GameObject d2 = FindDeepChild(transform, "D2").gameObject;
+        GameObject d3 = FindDeepChild(transform, "D3").gameObject;
+
+        GameObject[] ds = new GameObject[3]{d1, d2, d3};
+
+        foreach(GameObject d in ds) {
+            d.transform.GetChild(1).GetComponent<MeshRenderer>().material = emissionBlue;
+            d.transform.GetChild(2).GetComponent<MeshRenderer>().material = emissionBlue;
+        }
     }
 
     [ClientRpc]

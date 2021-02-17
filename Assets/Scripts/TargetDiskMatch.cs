@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class TargetDiskMatch : NetworkBehaviour
 {
-    public Material trailBlue;
     public float speed;
     public int max_rebond;
     private float current_life_time;
@@ -15,11 +14,6 @@ public class TargetDiskMatch : NetworkBehaviour
     private int nb_rebond; 
     private GameObject owner; 
     private Transform playerTarget;
-
-    [ClientRpc]
-    public void RpcSetMaterial() {
-        GetComponent<TrailRenderer>().material = trailBlue;
-    }
 
     // Start is called before the first frame update
     public void setTarget(in Vector3 _target) {

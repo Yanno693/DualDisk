@@ -95,11 +95,7 @@ public class NetworkManagerCustomMatch : NetworkManager
             GameObject g = Instantiate(floorDisk, pos, rot);
             g.GetComponent<FloorDiskMatch>().setTarget(dir);
             g.GetComponent<FloorDiskMatch>().setOwner(player);
-    
             NetworkServer.Spawn(g);
-            
-            if(player == players[0])
-                g.GetComponent<FloorDiskMatch>().RpcSetMaterial();
         }
     }
 
@@ -111,12 +107,10 @@ public class NetworkManagerCustomMatch : NetworkManager
 
             NetworkServer.Spawn(g);
             
-            if(player == players[0]) {
-                g.GetComponent<TargetDiskMatch>().RpcSetMaterial();
+            if(player == players[0])
                 g.GetComponent<TargetDiskMatch>().setPlayerTarget(players[1].transform);
-            } else {
+            else
                 g.GetComponent<TargetDiskMatch>().setPlayerTarget(players[0].transform);
-            }
         }
     }
 

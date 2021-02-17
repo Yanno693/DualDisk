@@ -48,7 +48,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4af8f672f2c91dd49ae5490f98b18561, type: 2}
+  - {fileID: 2100000, guid: 2733cad89d0e3574081535fe1dfe7707, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -150,7 +150,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   trailBlue: {fileID: 0}
-  speed: 50
+  speed: 55
   max_rebond: 5
 --- !u!114 &2779704472914752538
 MonoBehaviour:
@@ -302,12 +302,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: cd6172c4377eb7a49a3bf512ebf1f189, type: 2}
+      objectReference: {fileID: 2100000, guid: 887392a958ffa114080558bba9be17e9, type: 2}
     - target: {fileID: 5464470036181424653, guid: 31970c9a77616944593a57e679f46bba,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: cd6172c4377eb7a49a3bf512ebf1f189, type: 2}
+      objectReference: {fileID: 2100000, guid: 887392a958ffa114080558bba9be17e9, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31970c9a77616944593a57e679f46bba, type: 3}
 --- !u!1 &6260978696449636309 stripped

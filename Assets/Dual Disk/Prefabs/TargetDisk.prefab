@@ -152,7 +152,6 @@ MonoBehaviour:
   trailBlue: {fileID: 2100000, guid: bcd9b0e5fe5d03f4087815a487d36c64, type: 2}
   speed: 50
   max_rebond: 5
-  life_time: 5
 --- !u!114 &2779704472914752538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,12 +302,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: cd6172c4377eb7a49a3bf512ebf1f189, type: 2}
+      objectReference: {fileID: 2100000, guid: 7828df271dcc1d840bade2d8a24b676d, type: 2}
     - target: {fileID: 5464470036181424653, guid: 31970c9a77616944593a57e679f46bba,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: cd6172c4377eb7a49a3bf512ebf1f189, type: 2}
+      objectReference: {fileID: 2100000, guid: 7828df271dcc1d840bade2d8a24b676d, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31970c9a77616944593a57e679f46bba, type: 3}
 --- !u!1 &6260978696449636309 stripped
