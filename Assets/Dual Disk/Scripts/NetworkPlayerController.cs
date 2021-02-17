@@ -16,6 +16,7 @@ public class NetworkPlayerController : NetworkBehaviour
     [HideInInspector] public bool isDodging;
     private float dodgeTime;
     private Vector3 dodgeDirection;
+    private bool isInPauseMenu;
 
     [HideInInspector] public bool serverAllowMovement;
 
@@ -65,7 +66,7 @@ public class NetworkPlayerController : NetworkBehaviour
         }
 
         //characterController.SimpleMove(new Vector3(directionRotation.x, jump, directionRotation.y) * finalSpeed * Time.deltaTime * 500.0f);
-        if(serverAllowMovement) {
+        if(serverAllowMovement && !Menu.isPaused) {
             if(!isDodging)
                 characterController.Move(new Vector3(directionRotation.x, mouvementY, directionRotation.y) * finalSpeed * Time.deltaTime);
             else
@@ -114,11 +115,8 @@ public class NetworkPlayerController : NetworkBehaviour
         Debug.Log(c);
 
 
-        Menu menu = FindObjectOfType<Menu>();
-        if(menu)
-            menu.gameObject.SetActive(false);
+        GameObject.Find("UI").GetComponent<Menu>().HideMenu();
 
-       
         c.GetComponent<Cinemachine.CinemachineFreeLook>().m_XAxis.m_InputAxisName = "Mouse X";
         c.GetComponent<Cinemachine.CinemachineFreeLook>().m_YAxis.m_InputAxisName = "Mouse Y";
 
@@ -126,6 +124,7 @@ public class NetworkPlayerController : NetworkBehaviour
         c.m_Follow = transform;
 
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
     
     // Start is called before the first frame update
@@ -145,6 +144,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
         mouvementY = 0.0f;
         isDodging = false;
+        isInPauseMenu = false;
 
         //currentCamera = FindObjectOfType<Camera>();
         Debug.Log(currentCamera);
@@ -200,6 +200,31 @@ public class NetworkPlayerController : NetworkBehaviour
         //}
     }
 
+    public void SetPause()
+    {
+        //RpcForbidMouvement();
+        
+        GameObject.Find("UI").GetComponent<Menu>().ShowPauseMenu();
+        isInPauseMenu = true;
+    }
+
+    public void ResumePause()
+    {
+        //RpcAllowMouvement();
+        
+        GameObject.Find("UI").GetComponent<Menu>().HidePauseMenu();
+        isInPauseMenu = false;
+    }
+
+
+    public void ControlPauseMenu()
+    {
+        if (!isInPauseMenu)
+            SetPause();
+        else
+            ResumePause();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -211,6 +236,12 @@ public class NetworkPlayerController : NetworkBehaviour
                 if(dodgeTime > 1.1f)
                     isDodging = false;
             }
+
+            if (Input.GetButtonDown("Cancel"))
+            {
+                ControlPauseMenu();
+            }
         }
+        
     }
 }

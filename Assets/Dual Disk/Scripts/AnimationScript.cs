@@ -46,7 +46,7 @@ public class AnimationScript : NetworkBehaviour
             throwWeight -= Time.deltaTime;
             jumpWeight -= Time.deltaTime;
             
-            if(GetComponent<NetworkPlayerController>().serverAllowMovement) {
+            if(GetComponent<NetworkPlayerController>().serverAllowMovement && !Menu.isPaused) {
                 animator.SetFloat("X", Input.GetAxis("Horizontal"));
                 animator.SetFloat("Y", Input.GetAxis("Vertical"));
 
