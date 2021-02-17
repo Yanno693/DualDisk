@@ -111,8 +111,8 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bb85d3c4ab1e9d440a13e2ab46d9180a, type: 2}
-  - {fileID: 2100000, guid: 4c20be390d5a4ce4bac30a547f516f0f, type: 2}
+  - {fileID: 2100000, guid: 97bae69fe9e94a34fb0fa43fb732adc6, type: 2}
+  - {fileID: 2100000, guid: 7aa1f0b951029e441b8e03b01780ebc2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2086,8 +2086,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  blueHead: {fileID: 2100000, guid: fb43fcdb3edac62419eb8b296660390e, type: 2}
-  blueBody: {fileID: 2100000, guid: 21ae8e11a61221f419e18c04db4a838c, type: 2}
+  blueHead: {fileID: 2100000, guid: 37fd105811473504b886f26d4545efca, type: 2}
+  blueBody: {fileID: 2100000, guid: 0ee2fe77475a7d440bf7cf8f2e146c18, type: 2}
   emissionBlue: {fileID: 2100000, guid: cd6172c4377eb7a49a3bf512ebf1f189, type: 2}
   currentCamera: {fileID: 0}
   movementSpeed: 0
