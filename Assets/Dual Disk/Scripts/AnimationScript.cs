@@ -26,6 +26,16 @@ public class AnimationScript : NetworkBehaviour
         animator.Play("Full_Jump", animator.GetLayerIndex("Jump Layer"), 0.0f);
     }
 
+    public void doDie() {
+        GetComponent<NetworkAnimator>().ResetTrigger("Spawn");
+        GetComponent<NetworkAnimator>().SetTrigger("Die");
+    }
+
+    public void doAlive() {
+        if(animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death1")
+            GetComponent<NetworkAnimator>().SetTrigger("Spawn");
+    }
+
 
     public void doDodge(Vector2 currentPos) {
         List<KeyValuePair<float, string>> dodgeDictionary = new List<KeyValuePair<float, string>>();
@@ -46,7 +56,7 @@ public class AnimationScript : NetworkBehaviour
             throwWeight -= Time.deltaTime;
             jumpWeight -= Time.deltaTime;
             
-            if(GetComponent<NetworkPlayerController>().serverAllowMovement && !Menu.isPaused) {
+            if(GetComponent<NetworkPlayerController>().serverAllowMovement && !Menu.isPaused && !GetComponent<NetworkPlayerController>().isDead) {
                 animator.SetFloat("X", Input.GetAxis("Horizontal"));
                 animator.SetFloat("Y", Input.GetAxis("Vertical"));
 

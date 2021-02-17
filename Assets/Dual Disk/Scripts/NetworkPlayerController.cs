@@ -14,9 +14,12 @@ public class NetworkPlayerController : NetworkBehaviour
     public float rotationSpeed;
     [HideInInspector] public float mouvementY;
     [HideInInspector] public bool isDodging;
+    [HideInInspector] public bool isDead;
     private float dodgeTime;
     private Vector3 dodgeDirection;
     private bool isInPauseMenu;
+
+    private float dissolve;
 
     [HideInInspector] public bool serverAllowMovement;
 
@@ -36,7 +39,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
         if(characterController.isGrounded) {
             mouvementY = 0.0f;
-            if(Input.GetButton("Dodge") && !isDodging && serverAllowMovement) {
+            if(Input.GetButton("Dodge") && !isDodging && serverAllowMovement && !isDead) {
                 dodgeTime = 0.0f;
                 isDodging = true;
 
@@ -66,7 +69,7 @@ public class NetworkPlayerController : NetworkBehaviour
         }
 
         //characterController.SimpleMove(new Vector3(directionRotation.x, jump, directionRotation.y) * finalSpeed * Time.deltaTime * 500.0f);
-        if(serverAllowMovement && !Menu.isPaused) {
+        if(serverAllowMovement && !Menu.isPaused && !isDead) {
             if(!isDodging)
                 characterController.Move(new Vector3(directionRotation.x, mouvementY, directionRotation.y) * finalSpeed * Time.deltaTime);
             else
@@ -77,7 +80,7 @@ public class NetworkPlayerController : NetworkBehaviour
             //characterController.Move(new Vector3(directionRotation.x * dodgeDirection.y, mouvementY, directionRotation.y * dodgeDirection.x) * finalSpeed * Time.deltaTime);
         //characterController.Sim
 
-        if(!isDodging) {
+        if(!isDodging && !isDead) {
             transform.rotation = Quaternion.Lerp(
                 transform.rotation,
                 Quaternion.LookRotation(new Vector3(directionForward.x, 0, directionForward.y)),
@@ -105,6 +108,10 @@ public class NetworkPlayerController : NetworkBehaviour
 
     public void initCamera() {
 
+        dissolve -= Time.deltaTime * 1.0f;
+        transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Dissolve", dissolve);
+        transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[1].SetFloat("_Dissolve", dissolve);
+
         if(currentCamera is null) {
             Camera cam = FindObjectOfType<Camera>();
             currentCamera = cam;
@@ -130,6 +137,7 @@ public class NetworkPlayerController : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        dissolve = 1.0f;
         serverAllowMovement = true;
         
         if(currentCamera is null) {
@@ -194,6 +202,12 @@ public class NetworkPlayerController : NetworkBehaviour
     }
 
     [ClientRpc]
+    public void RpcKillPlayer() {
+        GetComponent<AnimationScript>().doDie();
+        isDead = true;
+    }
+
+    [ClientRpc]
     public void RpcAllowMouvement() {
         //if(isLocalPlayer) {
             serverAllowMovement = true;
@@ -224,10 +238,29 @@ public class NetworkPlayerController : NetworkBehaviour
         else
             ResumePause();
     }
+    
+    [ClientRpc]
+    public void RpcUpdateDissolve() {
+        if(!isDead) {
+            if(dissolve < 1.0f) {
+                dissolve += Time.deltaTime * 0.3f;
+                transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Dissolve", dissolve);
+                transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[1].SetFloat("_Dissolve", dissolve);
+            }
+        } else {
+            if(dissolve > 0.0f) {
+                dissolve -= Time.deltaTime * 0.3f;
+                transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Dissolve", dissolve);
+                transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[1].SetFloat("_Dissolve", dissolve);
+            }
+        }
+    }
 
     // Update is called once per frame
     void Update()
     {
+        RpcUpdateDissolve();
+        
         if(isLocalPlayer) {
             FightingMovement();
 
@@ -242,6 +275,5 @@ public class NetworkPlayerController : NetworkBehaviour
                 ControlPauseMenu();
             }
         }
-        
     }
 }

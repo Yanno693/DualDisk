@@ -13,6 +13,8 @@ public class NetworkManagerCustomMatch : NetworkManager
 
     private bool hasStarted;
     private bool roundHasStarted;
+    private bool isPlayerDead;
+    private float playerDeadTime;
     private float serverStartTime;
     private float roundStartTime;
     private GameObject[] players;
@@ -26,6 +28,8 @@ public class NetworkManagerCustomMatch : NetworkManager
     public override void OnStartServer() {
         base.OnStartServer();
         hasStarted = false;
+        isPlayerDead = false;
+        roundHasStarted = false;
 
         NetworkServer.RegisterHandler<PlayerConnectMessage>(OnCreatePlayer);
     }
@@ -42,6 +46,12 @@ public class NetworkManagerCustomMatch : NetworkManager
     }
 
     void Update() {
+        if(isPlayerDead) {
+            playerDeadTime += Time.deltaTime;
+            if(playerDeadTime > 3.5f)
+                spawnPlayers();
+        }
+        
         if(NetworkServer.connections.Count == 2) {
             serverStartTime += Time.deltaTime;
         }
@@ -144,8 +154,11 @@ public class NetworkManagerCustomMatch : NetworkManager
     public void spawnPlayers() {
         DestroyAllDisk();
         RespawnAllHexagon();
+        resetHealth();
         roundHasStarted = false;
         roundStartTime = 0.0f;
+        isPlayerDead = false;
+        playerDeadTime = 0.0f;
 
         Camera c = FindObjectOfType<Camera>();
 
@@ -158,31 +171,33 @@ public class NetworkManagerCustomMatch : NetworkManager
     }
 
     public void isTouched(GameObject g) {
-        if(hasStarted) {
+        if(hasStarted && !isPlayerDead) {
 
             if(players[0] == g)
                 datas.RemoveP1Health();
             else
                 datas.RemoveP2Health();
 
-            if(datas.p1Health == 0) {
-                datas.ResetHealth();
-                datas.AddP2Score();
-                spawnPlayers();
-            }
+            if(!isPlayerDead) {
+                if(datas.p1Health == 0) {
+                    players[0].GetComponent<NetworkPlayerController>().RpcKillPlayer();
+                    datas.AddP2Score();
+                    isPlayerDead = true;
+                }
 
-            if(datas.p2Health == 0) {
-                datas.ResetHealth();
-                datas.AddP1Score();
-                spawnPlayers();
+                if(datas.p2Health == 0) {
+                    players[1].GetComponent<NetworkPlayerController>().RpcKillPlayer();
+                    datas.AddP1Score();
+                    isPlayerDead = true;
+                }
             }
         }
     }
 
     public void hasFallen (GameObject g) {
-        if(players[0] == g)
+        if(players[0] == g && !players[0].GetComponent<NetworkPlayerController>().isDead)
             datas.AddP2Score();
-        else
+        else if (players[1] == g && !players[1].GetComponent<NetworkPlayerController>().isDead)
             datas.AddP1Score();
         
         datas.ResetHealth();

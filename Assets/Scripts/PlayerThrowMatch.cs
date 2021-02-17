@@ -41,7 +41,9 @@ public class PlayerThrowMatch : NetworkBehaviour {
         fallen = false;
         this.GetComponent<NetworkPlayerController>().mouvementY = 0.0f;
         this.GetComponent<NetworkPlayerController>().isDodging = false;
+        this.GetComponent<NetworkPlayerController>().isDead = false;
         this.GetComponent<NetworkPlayerController>().RpcForbidMouvement();
+        this.GetComponent<AnimationScript>().doAlive();
 
         this.GetComponent<CharacterController>().enabled = false;
         GetComponent<NetworkTransform>().ServerTeleport(pos, rot);
@@ -150,7 +152,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
                     CmdShowDisplayDisk(i);
             }
 
-            if(GetComponent<NetworkPlayerController>().serverAllowMovement) {
+            if(GetComponent<NetworkPlayerController>().serverAllowMovement && !GetComponent<NetworkPlayerController>().isDead) {
                 if(Input.GetButtonDown("Fire1")) {
                     for(int i = 0; i < nbDisk; i++) {
                         if(delays[i] >= diskDelay) {
