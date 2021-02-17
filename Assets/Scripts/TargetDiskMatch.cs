@@ -69,11 +69,13 @@ public class TargetDiskMatch : NetworkBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Player") {
-            if(isServer) {
-                if(collision.gameObject != owner)
-                    FindObjectOfType<NetworkManagerCustomMatch>().isTouched(collision.gameObject);
+            if(current_life_time > 0.2f) {
+                if(isServer) {
+                    if(collision.gameObject != owner)
+                        FindObjectOfType<NetworkManagerCustomMatch>().isTouched(collision.gameObject);
+                }
+                CmdDestroyDisk(gameObject);
             }
-            CmdDestroyDisk(gameObject);
         }
 
         if(nb_rebond <= max_rebond)

@@ -62,19 +62,21 @@ public class DiskMatch : NetworkBehaviour
     private void OnCollisionEnter(Collision collision)
     {        
         if(collision.gameObject.tag == "Player") {
-            if(isServer) {
-                if(collision.gameObject == owner)
-                    owner.GetComponent<PlayerThrowMatch>().RpcAddDisk();
-                else
-                    FindObjectOfType<NetworkManagerCustomMatch>().isTouched(collision.gameObject);
+            if(current_life_time > 0.2f) {      
+                if(isServer) {
+                    if(collision.gameObject == owner)
+                        owner.GetComponent<PlayerThrowMatch>().RpcAddDisk();
+                    else
+                        FindObjectOfType<NetworkManagerCustomMatch>().isTouched(collision.gameObject);
+                }
+                CmdDestroyDisk(gameObject);
             }
-            CmdDestroyDisk(gameObject);
         } else {
 
             FindObjectOfType<NetworkManagerCustomMatch>().SpawnCollisionParticle(
             collision.contacts[0].point,
             Quaternion.LookRotation(collision.contacts[0].normal, Vector3.up));
-            
+
             if(nb_rebond <= max_rebond)
             {
                 
