@@ -73,8 +73,8 @@ public class Menu : MonoBehaviour
 
     public void OnJoinIP()
     {
-        manager.StartClient();
         manager.networkAddress = join_input.text;
+        manager.StartClient();
     }
 
     public void OnResume()

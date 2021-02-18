@@ -38,10 +38,10 @@ public class NetworkManagerCustomMatch : NetworkManager
     public override void OnClientDisconnect(NetworkConnection conn)
     {
         base.OnClientDisconnect(conn);
-        //StopHost();
-        //SceneManager.LoadScene(0);
-        //Cursor.lockState = CursorLockMode.None;
-        //Cursor.visible = true;
+        StopClient();
+        SceneManager.LoadScene(0);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public override void OnStartServer()

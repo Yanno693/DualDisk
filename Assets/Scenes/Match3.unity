@@ -1742,6 +1742,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 8685b0b7e2197af4a93180e403f82934, type: 2}
     - target: {fileID: 6913123892042939797, guid: 12b955b82bcf12d44a706c7c2069bb3c,
         type: 3}
+      propertyPath: networkAddress
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6913123892042939797, guid: 12b955b82bcf12d44a706c7c2069bb3c,
+        type: 3}
       propertyPath: dontDestroyOnLoad
       value: 0
       objectReference: {fileID: 0}
