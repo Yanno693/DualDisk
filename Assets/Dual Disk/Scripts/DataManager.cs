@@ -68,6 +68,20 @@ public class DataManager : NetworkBehaviour
         p2s.GetComponent<TextMeshProUGUI>().text = newValue > 0 ? (newValue).ToString() : "";
         //p2OrangeScoreText.text = newValue.ToString();
         //p2BlueScoreText.text = newValue.ToString();
+        switch (newValue)
+        {
+            case 3:
+            GetComponents<AudioSource>()[0].Play();
+            break;
+            case 2:
+            GetComponents<AudioSource>()[1].Play();
+            break;
+            case 1:
+            GetComponents<AudioSource>()[2].Play();
+            break;
+            default:
+            break;
+        }
     }
     
     public void ResetHealth() {
