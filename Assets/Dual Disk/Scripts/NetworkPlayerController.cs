@@ -46,7 +46,7 @@ public class NetworkPlayerController : NetworkBehaviour
             {
                 if (Input.GetButton("Dodge") && !isDodging && serverAllowMovement && !isDead)
                 {
-                    RpcRemoveCollider();
+                    CmdRemoveCollider();
                     energy.GetComponent<Image>().fillAmount -= 0.5f;
                     dodgeTime = 0.0f;
                     isDodging = true;
@@ -113,6 +113,16 @@ public class NetworkPlayerController : NetworkBehaviour
         if(isLocalPlayer) {
             initCamera();
         }
+    }
+
+    [Command]
+    public void CmdRemoveCollider(){
+        RpcRemoveCollider();
+    }
+
+    [Command]
+    public void CmdResetCollider(){
+        RpcResetCollider();
     }
 
     [ClientRpc]
@@ -304,7 +314,7 @@ public class NetworkPlayerController : NetworkBehaviour
                 if(dodgeTime > 1.1f)
                 {
                     isDodging = false;
-                    RpcResetCollider();
+                    CmdResetCollider();
                 }
                     
             }
