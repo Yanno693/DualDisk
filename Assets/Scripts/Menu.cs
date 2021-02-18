@@ -12,6 +12,7 @@ public class Menu : MonoBehaviour
     public GameObject panel_join;
     public GameObject paused_menu;
     public GameObject menu;
+    public GameObject panel_credits;
 
     public TMP_InputField join_input;
     public NetworkManagerCustomMatch manager;
@@ -118,6 +119,13 @@ public class Menu : MonoBehaviour
 
     public void OnCredits()
     {
-        
+        panel_principale.SetActive(false);
+        panel_credits.SetActive(true);
+    }
+
+    public void OnReturnCredits()
+    {
+        panel_credits.SetActive(false);
+        panel_principale.SetActive(true);
     }
 }
