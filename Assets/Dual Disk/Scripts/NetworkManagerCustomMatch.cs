@@ -35,23 +35,23 @@ public class NetworkManagerCustomMatch : NetworkManager
         Cursor.visible = true;
     }
 
-    public override void OnClientDisconnect(NetworkConnection conn)
-    {
-        base.OnClientDisconnect(conn);
-        StopHost();
-        SceneManager.LoadScene(0);
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
+    //public override void OnClientDisconnect(NetworkConnection conn)
+    //{
+    //    base.OnClientDisconnect(conn);
+    //    StopHost();
+    //    SceneManager.LoadScene(0);
+    //    Cursor.lockState = CursorLockMode.None;
+    //    Cursor.visible = true;
+    //}
 
-    public override void OnStartServer() {
-        base.OnStartServer();
-        hasStarted = false;
-        isPlayerDead = false;
-        roundHasStarted = false;
+    //public override void OnStartServer() {
+    //    base.OnStartServer();
+    //    hasStarted = false;
+    //    isPlayerDead = false;
+    //    roundHasStarted = false;
 
-        NetworkServer.RegisterHandler<PlayerConnectMessage>(OnCreatePlayer);
-    }
+    //    NetworkServer.RegisterHandler<PlayerConnectMessage>(OnCreatePlayer);
+    //}
     
     // Start is called before the first frame update
     public override void OnClientConnect(NetworkConnection conn)
