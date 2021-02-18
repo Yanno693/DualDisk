@@ -62,7 +62,7 @@ public class DiskMatch : NetworkBehaviour
     private void OnCollisionEnter(Collision collision)
     {        
         if(collision.gameObject.tag == "Player") {
-            if(current_life_time > 0.2f) {      
+            if(current_life_time > 0.1f) {      
                 if(isServer) {
                     if(collision.gameObject == owner)
                         owner.GetComponent<PlayerThrowMatch>().RpcAddDisk();
