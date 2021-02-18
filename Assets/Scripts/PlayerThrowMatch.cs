@@ -48,6 +48,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
         this.GetComponent<CharacterController>().enabled = false;
         GetComponent<NetworkTransform>().ServerTeleport(pos, rot);
         this.GetComponent<CharacterController>().enabled = true;
+        this.GetComponent<NetworkPlayerController>().RpcResetCollider();
 
         setCamera(rot);
     }
