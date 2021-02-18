@@ -118,15 +118,17 @@ public class NetworkPlayerController : NetworkBehaviour
     [ClientRpc]
     public void RpcRemoveCollider()
     {
-        GetComponent<CapsuleCollider>().enabled = false;
-        GetComponent<CharacterController>().detectCollisions = false;
+        //GetComponent<CapsuleCollider>().enabled = false;
+        //GetComponent<CharacterController>().detectCollisions = false;
+        gameObject.layer = LayerMask.NameToLayer("Barrier");
     }
 
     [ClientRpc]
     public void RpcResetCollider()
     {
-        GetComponent<CapsuleCollider>().enabled = true;
-        GetComponent<CharacterController>().detectCollisions = true;
+        //GetComponent<CapsuleCollider>().enabled = true;
+        //GetComponent<CharacterController>().detectCollisions = true;
+        gameObject.layer = LayerMask.NameToLayer("Player");
     }
 
     public void initCamera() {
