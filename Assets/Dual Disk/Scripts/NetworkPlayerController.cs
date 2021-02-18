@@ -119,12 +119,14 @@ public class NetworkPlayerController : NetworkBehaviour
     public void RpcRemoveCollider()
     {
         GetComponent<CapsuleCollider>().enabled = false;
+        GetComponent<CharacterController>().detectCollisions = false;
     }
 
     [ClientRpc]
     public void RpcResetCollider()
     {
         GetComponent<CapsuleCollider>().enabled = true;
+        GetComponent<CharacterController>().detectCollisions = true;
     }
 
     public void initCamera() {
