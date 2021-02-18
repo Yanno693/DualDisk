@@ -7,7 +7,7 @@ using Mirror;
 
 public class Menu : MonoBehaviour
 {
-    public Camera cam;
+    public GameObject cam;
     public GameObject panel_principale;
     public GameObject panel_join;
     public GameObject paused_menu;
@@ -16,11 +16,14 @@ public class Menu : MonoBehaviour
     public TMP_InputField join_input;
     public NetworkManagerCustomMatch manager;
 
+    private Transform cam_transform;
+
     public static bool isPaused;
 
     private void Start()
     {
         isPaused = false;
+        cam_transform = cam.transform;
     }
 
     public void OnHostGame()
@@ -86,7 +89,35 @@ public class Menu : MonoBehaviour
 
     public void OnQuitPaused()
     {
-        paused_menu.SetActive(false);
-        menu.SetActive(true);
+        if (NetworkServer.active && NetworkClient.isConnected)
+        {
+            manager.StopHost();
+
+        }
+        else if (NetworkClient.isConnected)
+        {
+            manager.StopClient();
+        }
+        else if (NetworkServer.active)
+        {
+            manager.StopServer();
+        }
+
+        //cam.transform.position = cam_transform.position;
+        //cam.transform.rotation = cam_transform.rotation;
+
+        //cam.GetComponent<Cinemachine.CinemachineFreeLook>().m_XAxis.m_InputAxisName = "";
+        //cam.GetComponent<Cinemachine.CinemachineFreeLook>().m_YAxis.m_InputAxisName = "";
+
+        //isPaused = false;
+
+        //paused_menu.SetActive(false);
+        //menu.SetActive(true);
+        SceneManager.LoadScene(0);
+    }
+
+    public void OnCredits()
+    {
+        
     }
 }
