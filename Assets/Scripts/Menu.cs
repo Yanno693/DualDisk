@@ -13,6 +13,7 @@ public class Menu : MonoBehaviour
     public GameObject paused_menu;
     public GameObject menu;
     public GameObject panel_credits;
+    public GameObject hud;
 
     public TMP_InputField join_input;
     public NetworkManagerCustomMatch manager;
@@ -30,6 +31,7 @@ public class Menu : MonoBehaviour
     public void OnHostGame()
     {
         manager.StartHost();
+        hud.SetActive(true);
     }
 
     public void HideMenu()
@@ -51,6 +53,11 @@ public class Menu : MonoBehaviour
         isPaused = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    public void ShowHUD()
+    {
+        hud.SetActive(true);
     }
 
     public void OnExit()
@@ -104,16 +111,6 @@ public class Menu : MonoBehaviour
             manager.StopServer();
         }
 
-        //cam.transform.position = cam_transform.position;
-        //cam.transform.rotation = cam_transform.rotation;
-
-        //cam.GetComponent<Cinemachine.CinemachineFreeLook>().m_XAxis.m_InputAxisName = "";
-        //cam.GetComponent<Cinemachine.CinemachineFreeLook>().m_YAxis.m_InputAxisName = "";
-
-        //isPaused = false;
-
-        //paused_menu.SetActive(false);
-        //menu.SetActive(true);
         SceneManager.LoadScene(0);
     }
 

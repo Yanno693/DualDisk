@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NetworkPlayerController : NetworkBehaviour
 {
@@ -12,13 +13,14 @@ public class NetworkPlayerController : NetworkBehaviour
     public Camera currentCamera;
     public float movementSpeed;
     public float rotationSpeed;
+    public GameObject energy;
     [HideInInspector] public float mouvementY;
     [HideInInspector] public bool isDodging;
     [HideInInspector] public bool isDead;
     private float dodgeTime;
     private Vector3 dodgeDirection;
     private bool isInPauseMenu;
-
+    private float energy_speed;
     private float dissolve;
 
     [HideInInspector] public bool serverAllowMovement;
@@ -37,28 +39,34 @@ public class NetworkPlayerController : NetworkBehaviour
         float angleBetween = Vector2.SignedAngle(Vector2.up, directionForward) * Mathf.Deg2Rad;
         Vector2 directionRotation = Vec2Rotate(directionInput, angleBetween);
 
+        
         if(characterController.isGrounded) {
             mouvementY = 0.0f;
-            if(Input.GetButton("Dodge") && !isDodging && serverAllowMovement && !isDead) {
-                dodgeTime = 0.0f;
-                isDodging = true;
+            if (energy.GetComponent<Image>().fillAmount >= 0.5f)
+            {
+                if (Input.GetButton("Dodge") && !isDodging && serverAllowMovement && !isDead)
+                {
+                    energy.GetComponent<Image>().fillAmount -= 0.5f;
+                    dodgeTime = 0.0f;
+                    isDodging = true;
 
-                Vector2 currentPos = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-                List<KeyValuePair<float, Vector2>> dodgeDictionary = new List<KeyValuePair<float, Vector2>>();
-                dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2( 0   , 0   )).magnitude, new Vector2( 0   , 0   )));
-                dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2( 0.5f, 0   )).magnitude, new Vector2( 0.5f, 0   )));
-                dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2(-0.5f, 0   )).magnitude, new Vector2(-0.5f, 0   )));
-                dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2( 0   , 0.5f)).magnitude, new Vector2( 0   , 0.5f)));
-                dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2( 0   ,-0.5f)).magnitude, new Vector2( 0   ,-0.5f)));
-                dodgeDictionary.Sort((x, y) => x.Key.CompareTo(y.Key));
+                    Vector2 currentPos = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                    List<KeyValuePair<float, Vector2>> dodgeDictionary = new List<KeyValuePair<float, Vector2>>();
+                    dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2(0, 0)).magnitude, new Vector2(0, 0)));
+                    dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2(0.5f, 0)).magnitude, new Vector2(0.5f, 0)));
+                    dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2(-0.5f, 0)).magnitude, new Vector2(-0.5f, 0)));
+                    dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2(0, 0.5f)).magnitude, new Vector2(0, 0.5f)));
+                    dodgeDictionary.Add(new KeyValuePair<float, Vector2>((currentPos - new Vector2(0, -0.5f)).magnitude, new Vector2(0, -0.5f)));
+                    dodgeDictionary.Sort((x, y) => x.Key.CompareTo(y.Key));
 
-                GetComponent<AnimationScript>().doDodge(dodgeDictionary[0].Value);
-                
-                Vector2 dir = dodgeDictionary[0].Value * 1.6f;
-                Vector3 f = new Vector3(directionForward.x, 0, directionForward.y)  * finalSpeed * Time.deltaTime * dir.y;
-                Vector3 r = new Vector3(directionForward.y, 0, -directionForward.x)  * finalSpeed * Time.deltaTime * dir.x;
-                dodgeDirection = f + r;
-            }
+                    GetComponent<AnimationScript>().doDodge(dodgeDictionary[0].Value);
+
+                    Vector2 dir = dodgeDictionary[0].Value * 1.6f;
+                    Vector3 f = new Vector3(directionForward.x, 0, directionForward.y) * finalSpeed * Time.deltaTime * dir.y;
+                    Vector3 r = new Vector3(directionForward.y, 0, -directionForward.x) * finalSpeed * Time.deltaTime * dir.x;
+                    dodgeDirection = f + r;
+                }
+            }       
         }
         else
             mouvementY -= 5.5f * Time.deltaTime;
@@ -123,6 +131,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
 
         GameObject.Find("UI").GetComponent<Menu>().HideMenu();
+        GameObject.Find("UI").GetComponent<Menu>().ShowHUD();
 
         c.GetComponent<Cinemachine.CinemachineFreeLook>().m_XAxis.m_InputAxisName = "Mouse X";
         c.GetComponent<Cinemachine.CinemachineFreeLook>().m_YAxis.m_InputAxisName = "Mouse Y";
@@ -149,6 +158,9 @@ public class NetworkPlayerController : NetworkBehaviour
 
         movementSpeed = 15.0f;
         rotationSpeed = 5.0f;
+
+        energy_speed = 0.1f;
+        energy = GameObject.Find("Energy_fill");
 
         mouvementY = 0.0f;
         isDodging = false;
@@ -256,6 +268,12 @@ public class NetworkPlayerController : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    public void RefillEnergy()
+    {
+        energy.GetComponent<Image>().fillAmount = 1.0f;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -274,6 +292,9 @@ public class NetworkPlayerController : NetworkBehaviour
             {
                 ControlPauseMenu();
             }
+
+            if(energy.GetComponent<Image>().fillAmount < 1)
+                energy.GetComponent<Image>().fillAmount += Time.deltaTime * energy_speed;
         }
     }
 }

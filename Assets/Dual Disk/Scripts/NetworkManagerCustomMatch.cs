@@ -235,6 +235,8 @@ public class NetworkManagerCustomMatch : NetworkManager
     public void startMatch() {
         players = GameObject.FindGameObjectsWithTag("Player");
         datas = FindObjectOfType<DataManager>();
+        players[0].GetComponent<NetworkPlayerController>().RefillEnergy();
+        players[1].GetComponent<NetworkPlayerController>().RefillEnergy();
 
         hasStarted = true;
         Debug.Log("Le match peut commencer !");
