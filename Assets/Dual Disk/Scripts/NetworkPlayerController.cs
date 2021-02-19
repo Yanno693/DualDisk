@@ -72,7 +72,7 @@ public class NetworkPlayerController : NetworkBehaviour
         else
             mouvementY -= 5.5f * Time.deltaTime;
 
-        if(Input.GetButton("Jump") && characterController.isGrounded && !isDodging) {
+        if(Input.GetButton("Jump") && characterController.isGrounded && !isDodging && !isDead) {
             mouvementY = 1.8f;
             GetComponent<AnimationScript>().doJump();
         }

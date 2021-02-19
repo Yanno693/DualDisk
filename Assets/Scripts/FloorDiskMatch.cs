@@ -60,26 +60,26 @@ public class FloorDiskMatch : NetworkBehaviour
                 }
                 CmdDestroyDisk(gameObject);
             }
-        }
+        } else {
+            if(collision.gameObject.tag == "Hexagon") {
+                Debug.Log("J'ai touché un hexagon");
+                collision.gameObject.GetComponent<HexagonScript>().RpcDestroy();
+                CmdDestroyDisk(gameObject);
+            } else {
+                if(nb_rebond <= max_rebond) {
+                    FindObjectOfType<NetworkManagerCustomMatch>().SpawnCollisionParticle(
+                    collision.contacts[0].point,
+                    Quaternion.LookRotation(collision.contacts[0].normal, Vector3.up));
+                    
+                    var direction = Vector3.Reflect(target.normalized, collision.contacts[0].normal);
 
-        if(collision.gameObject.tag == "Hexagon") {
-            Debug.Log("J'ai touché un hexagon");
-            collision.gameObject.GetComponent<HexagonScript>().RpcDestroy();
-            CmdDestroyDisk(gameObject);
-        }
-
-        if(nb_rebond <= max_rebond)
-        {
-            var direction = Vector3.Reflect(target.normalized, collision.contacts[0].normal);
-
-            target = direction;
-            rb.velocity = target;
-            nb_rebond++;
-        }
-        else
-        {
-            //Destroy(gameObject);
-            CmdDestroyDisk(gameObject);
+                    target = direction;
+                    rb.velocity = target;
+                    nb_rebond++;
+                } else {
+                    CmdDestroyDisk(gameObject);
+                }
+            }
         }
         
     }

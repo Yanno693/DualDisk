@@ -72,23 +72,17 @@ public class DiskMatch : NetworkBehaviour
                 CmdDestroyDisk(gameObject);
             }
         } else {
-
-            FindObjectOfType<NetworkManagerCustomMatch>().SpawnCollisionParticle(
-            collision.contacts[0].point,
-            Quaternion.LookRotation(collision.contacts[0].normal, Vector3.up));
-
-            if(nb_rebond <= max_rebond)
-            {
+            if(nb_rebond <= max_rebond) {
+                FindObjectOfType<NetworkManagerCustomMatch>().SpawnCollisionParticle(
+                collision.contacts[0].point,
+                Quaternion.LookRotation(collision.contacts[0].normal, Vector3.up));
                 
                 var direction = Vector3.Reflect(target.normalized, collision.contacts[0].normal);
 
                 target = direction;
                 rb.velocity = target;
                 nb_rebond++;
-            }
-            else
-            {
-                //Destroy(gameObject);
+            } else {
                 CmdDestroyDisk(gameObject);
             }
         }

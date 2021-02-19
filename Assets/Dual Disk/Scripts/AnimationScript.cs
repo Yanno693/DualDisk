@@ -8,8 +8,6 @@ public class AnimationScript : NetworkBehaviour
     private Animator animator;
     private float throwWeight;
     private float jumpWeight;
-    private float fallWeight;
-    //private float dodgeWeight;
 
     // Start is called before the first frame update
     void Start()
@@ -17,8 +15,6 @@ public class AnimationScript : NetworkBehaviour
         animator = GetComponent<Animator>();
         throwWeight = 0;
         jumpWeight = 0;
-        fallWeight = 0;
-        //dodgeWeight = 0;
     }
 
     public void doJump() {
@@ -60,7 +56,7 @@ public class AnimationScript : NetworkBehaviour
                 animator.SetFloat("X", Input.GetAxis("Horizontal"));
                 animator.SetFloat("Y", Input.GetAxis("Vertical"));
 
-                if(Input.GetButtonDown("Fire1")) {
+                if(Input.GetButtonDown("Fire1") || Input.GetButtonDown("Fire2") || Input.GetButtonDown("Fire3")) {
                     throwWeight = 1.0f;
                     animator.Play("Throw_Revert", animator.GetLayerIndex("Throw Layer"), 0.0f);
                 }

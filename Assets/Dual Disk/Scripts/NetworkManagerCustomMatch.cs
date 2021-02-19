@@ -183,7 +183,10 @@ public class NetworkManagerCustomMatch : NetworkManager
         Camera c = FindObjectOfType<Camera>();
 
         players[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0), Quaternion.Euler(1, 0, 0));
+        players[0].GetComponent<NetworkPlayerController>().RefillEnergy();
+        
         players[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0), Quaternion.Euler(-1, 0, 0));
+        players[1].GetComponent<NetworkPlayerController>().RefillEnergy();
     }
 
     public void resetHealth() {

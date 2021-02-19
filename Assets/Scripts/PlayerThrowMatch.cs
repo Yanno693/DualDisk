@@ -9,9 +9,11 @@ public class PlayerThrowMatch : NetworkBehaviour {
     public int nbDisk;
 
     private bool[] displayDisks;
+    private bool displaySpecial;
 
     private float[] delays;
     private bool fallen;
+    private float delaySpecial;
     
     private NetworkManagerCustomMatch networkManager;
     
@@ -39,6 +41,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
     [ClientRpc]
     public void RpcMove(Vector3 pos, Quaternion rot) {
         fallen = false;
+        delaySpecial = 0.0f;
         this.GetComponent<NetworkPlayerController>().mouvementY = 0.0f;
         this.GetComponent<NetworkPlayerController>().isDodging = false;
         this.GetComponent<NetworkPlayerController>().isDead = false;
@@ -49,6 +52,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
         GetComponent<NetworkTransform>().ServerTeleport(pos, rot);
         this.GetComponent<CharacterController>().enabled = true;
         this.GetComponent<NetworkPlayerController>().CmdResetCollider();
+        CmdHideDisplayDisk(4);
 
         setCamera(rot);
     }
@@ -87,6 +91,8 @@ public class PlayerThrowMatch : NetworkBehaviour {
             delays[i] = diskDelay;
             displayDisks[i] = true;
         }
+        delaySpecial = 0.0f;
+        displaySpecial = false;
     }
 
     [Command]
@@ -101,13 +107,17 @@ public class PlayerThrowMatch : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcHideDisplayDisk(int i) {
-        //GetComponent<NetworkTransform>().
-        Debug.Log(transform);
-        GameObject disk = FindDeepChild(transform, "D" + (3 - i)).gameObject;
-        Debug.Log(disk);
+        GameObject disk;
+        if(i < 3) {
+            disk = FindDeepChild(transform, "D" + (3 - i)).gameObject;
+            displayDisks[i] = false;
+        } else {
+            disk = FindDeepChild(transform, "DS").gameObject;
+            displaySpecial = false;
+        }
+
         for(int j = 0; j < disk.transform.childCount; j++)
             disk.transform.GetChild(j).GetComponent<MeshRenderer>().enabled = false;
-        displayDisks[i] = false;
     }
 
     [Command]
@@ -118,14 +128,17 @@ public class PlayerThrowMatch : NetworkBehaviour {
     [ClientRpc]
     //public void RpcShowDisplayDisk(GameObject disk) {
     public void RpcShowDisplayDisk(int i) {
-        //if(isLocalPlayer) {
-            Debug.Log(transform);
-            GameObject disk = FindDeepChild(transform, "D" + (3 - i)).gameObject;
-            Debug.Log(disk);
-        //}
+        GameObject disk;
+        if(i < 3) {
+            disk = FindDeepChild(transform, "D" + (3 - i)).gameObject;
+            displayDisks[i] = true;
+        } else {
+            disk = FindDeepChild(transform, "DS").gameObject;
+            displaySpecial = true;
+        }
+        
         for(int j = 0; j < disk.transform.childCount; j++)
             disk.transform.GetChild(j).GetComponent<MeshRenderer>().enabled = true;
-        displayDisks[i] = true;
     }
 
     private Transform FindDeepChild(Transform aParent, string aName)
@@ -153,7 +166,10 @@ public class PlayerThrowMatch : NetworkBehaviour {
                     CmdShowDisplayDisk(i);
             }
 
-            if(GetComponent<NetworkPlayerController>().serverAllowMovement && !GetComponent<NetworkPlayerController>().isDead) {
+            if(delaySpecial > 12.0f && !displaySpecial)
+                CmdShowDisplayDisk(4);
+
+            if(GetComponent<NetworkPlayerController>().serverAllowMovement && !GetComponent<NetworkPlayerController>().isDead && !Menu.isPaused) {
                 if(Input.GetButtonDown("Fire1")) {
                     for(int i = 0; i < nbDisk; i++) {
                         if(delays[i] >= diskDelay) {
@@ -170,18 +186,24 @@ public class PlayerThrowMatch : NetworkBehaviour {
                     }
                 }
 
-                if(Input.GetButtonDown("Fire2")) {
-                    Transform camera_target = transform.GetChild(0);
-                    Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
+                if(delaySpecial >= 12.0f) {
+                    if(Input.GetButtonDown("Fire2")) {
+                        Transform camera_target = transform.GetChild(0);
+                        Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
 
-                    CmdThrowFloor(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
-                }
+                        CmdThrowFloor(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
+                        CmdHideDisplayDisk(4);
+                        delaySpecial = 0.0f;
+                    }
 
-                if(Input.GetButtonDown("Fire3")) {
-                    Transform camera_target = transform.GetChild(0);
-                    Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
+                    if(Input.GetButtonDown("Fire3")) {
+                        Transform camera_target = transform.GetChild(0);
+                        Vector3 direction = (camera_target.position - GetComponent<NetworkPlayerController>().currentCamera.transform.position).normalized;
 
-                    CmdThrowTarget(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
+                        CmdThrowTarget(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
+                        CmdHideDisplayDisk(4);
+                        delaySpecial = 0.0f;
+                    }
                 }
             }
 
@@ -194,6 +216,9 @@ public class PlayerThrowMatch : NetworkBehaviour {
                     CmdHasFallen(gameObject);
                 }
             }
+
+            if(GetComponent<NetworkPlayerController>().serverAllowMovement && delaySpecial < 12.0f)
+                delaySpecial += Time.deltaTime;
         }
     }
 }
