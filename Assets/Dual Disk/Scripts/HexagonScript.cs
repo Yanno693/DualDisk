@@ -20,11 +20,18 @@ public class HexagonScript : NetworkBehaviour
         dissolve = 0.0f;
         GetComponent<MeshCollider>().enabled = true;
         Transform emitter = transform.Find("Emitter");
+        Transform holo = transform.Find("HoloEmitter");
+        Transform spark = transform.Find("SparkEmitter");
         emitter.GetComponent<ParticleSystem>().Stop();
         emitter.GetComponent<ParticleSystem>().Clear();
+        holo.GetComponent<ParticleSystem>().Stop();
+        holo.GetComponent<ParticleSystem>().Clear();
+        spark.GetComponent<ParticleSystem>().Stop();
+        spark.GetComponent<ParticleSystem>().Clear();
 
         if(emitter.position.x < 0) {
             emitter.GetComponent<ParticleSystemRenderer>().material = emissionBlue;
+            holo.GetComponent<ParticleSystemRenderer>().material = emissionBlue;
             GetComponent<MeshRenderer>().material = dissolveBlue;
         }
         GetComponent<MeshRenderer>().material.SetFloat("_Dissolve", 0);
@@ -39,6 +46,8 @@ public class HexagonScript : NetworkBehaviour
         isDestroyed = true;
         GetComponent<MeshCollider>().enabled = false;
         transform.Find("Emitter").GetComponent<ParticleSystem>().Play();
+        transform.Find("HoloEmitter").GetComponent<ParticleSystem>().Play();
+        transform.Find("SparkEmitter").GetComponent<ParticleSystem>().Play();
     }
     
     // Start is called before the first frame update
