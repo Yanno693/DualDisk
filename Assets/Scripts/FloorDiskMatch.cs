@@ -57,8 +57,8 @@ public class FloorDiskMatch : NetworkBehaviour
                 if(isServer) {
                     if(collision.gameObject != owner)
                         FindObjectOfType<NetworkManagerCustomMatch>().isTouched(collision.gameObject);
+                    CmdDestroyDisk(gameObject);
                 }
-                CmdDestroyDisk(gameObject);
             }
         } else {
             if(collision.gameObject.tag == "Hexagon") {
@@ -77,7 +77,9 @@ public class FloorDiskMatch : NetworkBehaviour
                     rb.velocity = target;
                     nb_rebond++;
                 } else {
-                    CmdDestroyDisk(gameObject);
+                    if(isServer) {
+                        CmdDestroyDisk(gameObject);
+                    }
                 }
             }
         }
