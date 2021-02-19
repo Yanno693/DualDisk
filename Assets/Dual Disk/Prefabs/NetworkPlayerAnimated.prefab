@@ -2051,7 +2051,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 7998424033874688596}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.4221294
   m_Height: 1.8617609
   m_Direction: 1
@@ -2092,8 +2092,11 @@ MonoBehaviour:
   currentCamera: {fileID: 0}
   movementSpeed: 0
   rotationSpeed: 0
+  energy: {fileID: 0}
   mouvementY: 0
   isDodging: 0
+  isDead: 0
+  isInvincible: 0
   serverAllowMovement: 0
 --- !u!114 &3038186820520894182
 MonoBehaviour:
