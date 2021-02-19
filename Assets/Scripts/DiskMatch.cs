@@ -68,8 +68,9 @@ public class DiskMatch : NetworkBehaviour
                         owner.GetComponent<PlayerThrowMatch>().RpcAddDisk();
                     else
                         FindObjectOfType<NetworkManagerCustomMatch>().isTouched(collision.gameObject);
+                    
+                    CmdDestroyDisk(gameObject);
                 }
-                CmdDestroyDisk(gameObject);
             }
         } else {
             if(nb_rebond <= max_rebond) {
@@ -83,7 +84,9 @@ public class DiskMatch : NetworkBehaviour
                 rb.velocity = target;
                 nb_rebond++;
             } else {
-                CmdDestroyDisk(gameObject);
+                if(isServer) {
+                    CmdDestroyDisk(gameObject);
+                }
             }
         }
         

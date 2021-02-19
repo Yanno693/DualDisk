@@ -18,18 +18,22 @@ public class AnimationScript : NetworkBehaviour
     }
 
     public void doJump() {
-        jumpWeight = 1.0f;
-        animator.Play("Full_Jump", animator.GetLayerIndex("Jump Layer"), 0.0f);
+        GetComponent<NetworkAnimator>().SetTrigger("Jump");
+        //jumpWeight = 1.0f;
+        //animator.Play("Full_Jump", animator.GetLayerIndex("Jump Layer"), 0.0f);
     }
 
     public void doDie() {
         GetComponent<NetworkAnimator>().ResetTrigger("Spawn");
-        GetComponent<NetworkAnimator>().SetTrigger("Die");
+        GetComponent<NetworkAnimator>().SetTrigger("Die" + ((int)Time.time % 2 == 0 ? "2" : ""));
     }
 
     public void doAlive() {
-        if(animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death1")
+        if(animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death1" || animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death2") {
+            GetComponent<NetworkAnimator>().ResetTrigger("Die");
+            GetComponent<NetworkAnimator>().ResetTrigger("Die2");
             GetComponent<NetworkAnimator>().SetTrigger("Spawn");
+        }
     }
 
 
