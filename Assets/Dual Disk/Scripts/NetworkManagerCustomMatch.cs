@@ -196,10 +196,19 @@ public class NetworkManagerCustomMatch : NetworkManager
     public void isTouched(GameObject g) {
         if(hasStarted && !isPlayerDead) {
 
-            if(players[0] == g)
-                datas.RemoveP1Health();
-            else
-                datas.RemoveP2Health();
+            if(players[0] == g) {
+                if (!players[0].GetComponent<NetworkPlayerController>().isInvinsible) {
+                    if(datas.p1Health > 1)
+                        players[0].GetComponent<NetworkPlayerController>().RpcSetInvinsible();
+                    datas.RemoveP1Health();
+                }
+            } else {
+                if (!players[1].GetComponent<NetworkPlayerController>().isInvinsible) {
+                    if(datas.p2Health > 1)
+                        players[1].GetComponent<NetworkPlayerController>().RpcSetInvinsible();
+                    datas.RemoveP2Health();
+                }
+            }
 
             if(!isPlayerDead) {
                 if(datas.p1Health == 0) {

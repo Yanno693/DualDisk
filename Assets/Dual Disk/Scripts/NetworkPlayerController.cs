@@ -22,6 +22,8 @@ public class NetworkPlayerController : NetworkBehaviour
     private bool isInPauseMenu;
     private float energy_speed;
     private float dissolve;
+    [HideInInspector] public bool isInvinsible;
+    private float damage;
 
     [HideInInspector] public bool serverAllowMovement;
 
@@ -247,6 +249,27 @@ public class NetworkPlayerController : NetworkBehaviour
     }
 
     [ClientRpc]
+    public void RpcSetInvinsible() {
+        isInvinsible = true;
+        damage = 2.0f;
+
+        transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[0].SetInt("_Damage", 1);
+        transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[1].SetInt("_Damage", 1);
+    }
+
+    [Command]
+    public void CmdRemoveInvinsible() {
+        RpcRemoveInvinsible();
+    }
+
+    [ClientRpc]
+    public void RpcRemoveInvinsible() {
+        isInvinsible = false;
+        transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[0].SetInt("_Damage", 0);
+        transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[1].SetInt("_Damage", 0);
+    }
+
+    [ClientRpc]
     public void RpcAllowMouvement() {
         //if(isLocalPlayer) {
             serverAllowMovement = true;
@@ -305,6 +328,13 @@ public class NetworkPlayerController : NetworkBehaviour
     void Update()
     {
         RpcUpdateDissolve();
+
+        if(isInvinsible) {
+            damage -= Time.deltaTime;
+            if(damage < 0) {
+                CmdRemoveInvinsible();
+            }
+        }
         
         if(isLocalPlayer) {
             FightingMovement();
