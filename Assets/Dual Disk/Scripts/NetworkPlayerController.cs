@@ -22,7 +22,7 @@ public class NetworkPlayerController : NetworkBehaviour
     private bool isInPauseMenu;
     private float energy_speed;
     private float dissolve;
-    [HideInInspector] public bool isInvinsible;
+    [HideInInspector] public bool isInvincible;
     private float damage;
 
     [HideInInspector] public bool serverAllowMovement;
@@ -249,22 +249,22 @@ public class NetworkPlayerController : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcSetInvinsible() {
-        isInvinsible = true;
-        damage = 2.0f;
+    public void RpcSetInvincible() {
+        isInvincible = true;
+        damage = 1.5f;
 
         transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[0].SetInt("_Damage", 1);
         transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[1].SetInt("_Damage", 1);
     }
 
     [Command]
-    public void CmdRemoveInvinsible() {
-        RpcRemoveInvinsible();
+    public void CmdRemoveInvincible() {
+        RpcRemoveInvincible();
     }
 
     [ClientRpc]
-    public void RpcRemoveInvinsible() {
-        isInvinsible = false;
+    public void RpcRemoveInvincible() {
+        isInvincible = false;
         transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[0].SetInt("_Damage", 0);
         transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[1].SetInt("_Damage", 0);
     }
@@ -329,10 +329,10 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         RpcUpdateDissolve();
 
-        if(isInvinsible) {
+        if(isInvincible) {
             damage -= Time.deltaTime;
             if(damage < 0) {
-                CmdRemoveInvinsible();
+                CmdRemoveInvincible();
             }
         }
         

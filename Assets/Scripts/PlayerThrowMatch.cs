@@ -46,7 +46,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
         this.GetComponent<NetworkPlayerController>().isDodging = false;
         this.GetComponent<NetworkPlayerController>().isDead = false;
         this.GetComponent<NetworkPlayerController>().RpcForbidMouvement();
-        this.GetComponent<NetworkPlayerController>().RpcRemoveInvinsible();
+        this.GetComponent<NetworkPlayerController>().RpcRemoveInvincible();
         this.GetComponent<AnimationScript>().doAlive();
 
         this.GetComponent<CharacterController>().enabled = false;

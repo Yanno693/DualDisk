@@ -197,15 +197,15 @@ public class NetworkManagerCustomMatch : NetworkManager
         if(hasStarted && !isPlayerDead) {
 
             if(players[0] == g) {
-                if (!players[0].GetComponent<NetworkPlayerController>().isInvinsible) {
+                if (!players[0].GetComponent<NetworkPlayerController>().isInvincible) {
                     if(datas.p1Health > 1)
-                        players[0].GetComponent<NetworkPlayerController>().RpcSetInvinsible();
+                        players[0].GetComponent<NetworkPlayerController>().RpcSetInvincible();
                     datas.RemoveP1Health();
                 }
             } else {
-                if (!players[1].GetComponent<NetworkPlayerController>().isInvinsible) {
+                if (!players[1].GetComponent<NetworkPlayerController>().isInvincible) {
                     if(datas.p2Health > 1)
-                        players[1].GetComponent<NetworkPlayerController>().RpcSetInvinsible();
+                        players[1].GetComponent<NetworkPlayerController>().RpcSetInvincible();
                     datas.RemoveP2Health();
                 }
             }
