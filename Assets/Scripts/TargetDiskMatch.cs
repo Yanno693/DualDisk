@@ -49,7 +49,7 @@ public class TargetDiskMatch : NetworkBehaviour
         rb.velocity = direction * speed;
         transform.LookAt(transform.position + target, Vector3.up);*/
 
-        target = (target + ((pTarget - transform.position).normalized * 0.05f)).normalized;
+        target = (target + ((pTarget - (transform.position - Vector3.up)).normalized * 0.05f)).normalized;
 
         rb.velocity = target * speed;
         transform.LookAt(transform.position + target, Vector3.up);
