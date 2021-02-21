@@ -250,6 +250,9 @@ public class NetworkManagerCustomMatch : NetworkManager
         players[0].GetComponent<NetworkPlayerController>().RefillEnergy();
         players[1].GetComponent<NetworkPlayerController>().RefillEnergy();
 
+        players[0].GetComponent<NetworkPlayerController>().ResetSpecial();
+        players[1].GetComponent<NetworkPlayerController>().ResetSpecial();
+
         hasStarted = true;
         Debug.Log("Le match peut commencer !");
         spawnPlayers();

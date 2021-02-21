@@ -14,6 +14,7 @@ public class NetworkPlayerController : NetworkBehaviour
     public float movementSpeed;
     public float rotationSpeed;
     public GameObject energy;
+    public GameObject special;
     [HideInInspector] public float mouvementY;
     [HideInInspector] public bool isDodging;
     [HideInInspector] public bool isDead;
@@ -21,6 +22,7 @@ public class NetworkPlayerController : NetworkBehaviour
     private Vector3 dodgeDirection;
     private bool isInPauseMenu;
     private float energy_speed;
+    private float special_speed;
     private float dissolve;
     [HideInInspector] public bool isInvincible;
     private float damage;
@@ -189,7 +191,10 @@ public class NetworkPlayerController : NetworkBehaviour
         rotationSpeed = 5.0f;
 
         energy_speed = 0.1f;
+        special_speed = 0.12f;
+
         energy = GameObject.Find("Energy_fill");
+        special = GameObject.Find("Special_fill");
 
         mouvementY = 0.0f;
         isDodging = false;
@@ -324,6 +329,11 @@ public class NetworkPlayerController : NetworkBehaviour
         energy.GetComponent<Image>().fillAmount = 1.0f;
     }
 
+    public void ResetSpecial()
+    {
+        special.GetComponent<Image>().fillAmount = 0.0f;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -356,6 +366,9 @@ public class NetworkPlayerController : NetworkBehaviour
 
             if(energy.GetComponent<Image>().fillAmount < 1)
                 energy.GetComponent<Image>().fillAmount += Time.deltaTime * energy_speed;
+
+            if (special.GetComponent<Image>().fillAmount < 1)
+                special.GetComponent<Image>().fillAmount = GetComponent<PlayerThrowMatch>().delaySpecial / 12.0f;
         }
     }
 }

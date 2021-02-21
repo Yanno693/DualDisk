@@ -13,7 +13,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
 
     private float[] delays;
     private bool fallen;
-    private float delaySpecial;
+    public float delaySpecial;
     
     private NetworkManagerCustomMatch networkManager;
     
@@ -195,6 +195,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
                         CmdThrowFloor(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
                         CmdHideDisplayDisk(4);
                         delaySpecial = 0.0f;
+                        this.GetComponent<NetworkPlayerController>().ResetSpecial();
                     }
 
                     if(Input.GetButtonDown("Fire3")) {
@@ -204,6 +205,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
                         CmdThrowTarget(transform.position + direction * 2.0f + new Vector3(0, 2.0f, 0) , Quaternion.identity, direction);
                         CmdHideDisplayDisk(4);
                         delaySpecial = 0.0f;
+                        this.GetComponent<NetworkPlayerController>().ResetSpecial();
                     }
                 }
             }
