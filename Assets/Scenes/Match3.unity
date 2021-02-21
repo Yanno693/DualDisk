@@ -99,7 +99,7 @@ LightmapSettings:
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: 50f4e81da74e27a4f9672f8b2f70ea68,
     type: 2}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -1371,6 +1371,7 @@ MonoBehaviour:
   p2Score: 0
   roundCountdown: 0
   roundCountdownInt: 0
+  matchOver: 0
   p1OrangeHealthText: {fileID: 2042364372}
   p2OrangeHealthText: {fileID: 1857353526}
   p1BlueHealthText: {fileID: 343050188}
@@ -3538,7 +3539,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1938752597
 MonoBehaviour:
   m_ObjectHideFlags: 0

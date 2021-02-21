@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerThrowMatch : NetworkBehaviour {
     
@@ -47,10 +48,13 @@ public class PlayerThrowMatch : NetworkBehaviour {
         this.GetComponent<NetworkPlayerController>().isDead = false;
         this.GetComponent<NetworkPlayerController>().RpcForbidMouvement();
         this.GetComponent<NetworkPlayerController>().RpcRemoveInvincible();
+        this.GetComponent<NetworkPlayerController>().special.GetComponent<Image>().fillAmount = 0;
         this.GetComponent<AnimationScript>().doAlive();
 
         this.GetComponent<CharacterController>().enabled = false;
         GetComponent<NetworkTransform>().ServerTeleport(pos, rot);
+        transform.position = pos;
+        transform.rotation = rot;
         this.GetComponent<CharacterController>().enabled = true;
         this.GetComponent<NetworkPlayerController>().CmdResetCollider();
         CmdHideDisplayDisk(4);
@@ -98,6 +102,11 @@ public class PlayerThrowMatch : NetworkBehaviour {
 
     [Command]
     public void CmdHasFallen(GameObject g) {
+        RpcHasFallen(g);
+    }
+
+    [ClientRpc]
+    public void RpcHasFallen(GameObject g) {
         networkManager.hasFallen(g);
     }
 
@@ -210,7 +219,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
                 }
             }
 
-            if(transform.position.y < -150) {
+            if(transform.position.y < -10) {
                 if(!networkManager)
                     networkManager = FindObjectOfType<NetworkManagerCustomMatch>();
 

@@ -14,6 +14,7 @@ public class DataManager : NetworkBehaviour
 
     [HideInInspector] [SyncVar] public float roundCountdown;
     [HideInInspector] [SyncVar (hook = nameof(RpcUpdateCountdown))] public int roundCountdownInt;
+    [HideInInspector] [SyncVar] public bool matchOver;
 
     public TextMeshProUGUI p1OrangeHealthText;
     public TextMeshProUGUI p2OrangeHealthText;
@@ -24,6 +25,31 @@ public class DataManager : NetworkBehaviour
     public TextMeshProUGUI p2OrangeScoreText;
     public TextMeshProUGUI p1BlueScoreText;
     public TextMeshProUGUI p2BlueScoreText;
+    public static readonly int nbRound = 3;
+
+    [Command] 
+    public void CmdOrangeWin() {
+        RpcOrangeWin();
+    }
+
+    [ClientRpc] 
+    public void RpcOrangeWin() {
+            GameObject p2s = GameObject.Find("Countdown");
+            p2s.GetComponent<TextMeshProUGUI>().fontSize /= 8;
+            p2s.GetComponent<TextMeshProUGUI>().text = "orange wins";
+    }
+
+    [Command] 
+    public void CmdBlueWin() {
+        RpcBlueWin();
+    }
+
+    [ClientRpc] 
+    public void RpcBlueWin() {
+            GameObject p2s = GameObject.Find("Countdown");
+            p2s.GetComponent<TextMeshProUGUI>().fontSize /= 8;
+            p2s.GetComponent<TextMeshProUGUI>().text = "blue wins";
+    }
 
     [ClientRpc]
     public void RpcUpdateHud_P1Health(int oldValue, int newValue) {
@@ -84,13 +110,20 @@ public class DataManager : NetworkBehaviour
         }
     }
     
-    public void ResetHealth() {
+    [ClientRpc]
+    public void RpcResetHealth() {
         if(isServer) {
             Debug.Log("Reset Health");
             p1Health = 3;
             p2Health = 3;
-            roundCountdownInt = 4;
-            roundCountdown = 4.0f;
+            if(!matchOver) {
+                roundCountdownInt = 4;
+                roundCountdown = 4.0f;
+            } else if (p1Score >= nbRound) {
+                RpcBlueWin();
+            } else {
+                RpcOrangeWin();
+            }
         } else {
             CmdResetHealth();
         }
@@ -98,12 +131,13 @@ public class DataManager : NetworkBehaviour
 
     [Command]
     public void CmdResetHealth() {
-        ResetHealth();
+        RpcResetHealth();
     }
 
     public void InitMatchData() {
         if(isServer) {
             Debug.Log("Init Match");
+            matchOver = false;
             p1Health = 3;
             p2Health = 3;
             p1Score = 1;
@@ -194,11 +228,17 @@ public class DataManager : NetworkBehaviour
 
     public void Update() {
         if(isServer) {
-            if(roundCountdown > 0.0f)
-                roundCountdown -= Time.deltaTime;
+            if(p1Score < nbRound && p2Score < nbRound) {
+                if(roundCountdown > 0.0f)
+                    roundCountdown -= Time.deltaTime;
 
-            if(roundCountdownInt > (int)roundCountdown) {
-                UpdateCountdown();
+                if(roundCountdownInt > (int)roundCountdown) {
+                    UpdateCountdown();
+                }
+            } else if (p1Score >= nbRound && !matchOver) {
+                matchOver = true;
+            } else if (p2Score >= nbRound && !matchOver) {
+                matchOver = true;
             }
         }
     }

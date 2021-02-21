@@ -86,8 +86,10 @@ public class NetworkManagerCustomMatch : NetworkManager
 
         if(!roundHasStarted && roundStartTime > 3.0f) {
             roundHasStarted = true;
-            players[0].GetComponent<NetworkPlayerController>().RpcAllowMouvement();
-            players[1].GetComponent<NetworkPlayerController>().RpcAllowMouvement();
+            if(datas.p1Score < DataManager.nbRound && datas.p2Score < DataManager.nbRound) {
+                players[0].GetComponent<NetworkPlayerController>().RpcAllowMouvement();
+                players[1].GetComponent<NetworkPlayerController>().RpcAllowMouvement();
+            }
         }
     }
 
@@ -184,13 +186,15 @@ public class NetworkManagerCustomMatch : NetworkManager
 
         players[0].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(-20, 3, 0), Quaternion.Euler(1, 0, 0));
         players[0].GetComponent<NetworkPlayerController>().RefillEnergy();
+        players[0].GetComponent<NetworkPlayerController>().ResetSpecial();
         
         players[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0), Quaternion.Euler(-1, 0, 0));
         players[1].GetComponent<NetworkPlayerController>().RefillEnergy();
+        players[1].GetComponent<NetworkPlayerController>().ResetSpecial();
     }
 
     public void resetHealth() {
-        datas.ResetHealth();
+        datas.RpcResetHealth();
     }
 
     public void isTouched(GameObject g) {
@@ -227,13 +231,14 @@ public class NetworkManagerCustomMatch : NetworkManager
     }
 
     public void hasFallen (GameObject g) {
-        if(players[0] == g && !players[0].GetComponent<NetworkPlayerController>().isDead)
-            datas.AddP2Score();
-        else if (players[1] == g && !players[1].GetComponent<NetworkPlayerController>().isDead)
-            datas.AddP1Score();
+        if(!isPlayerDead && roundHasStarted) {
+            if(players[0] == g && !players[0].GetComponent<NetworkPlayerController>().isDead)
+                datas.AddP2Score();
+            else if (players[1] == g && !players[1].GetComponent<NetworkPlayerController>().isDead)
+                datas.AddP1Score();
         
-        datas.ResetHealth();
-        spawnPlayers();
+            isPlayerDead = true;
+        }
     }
 
     public void initMaterials() {
