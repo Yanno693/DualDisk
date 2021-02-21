@@ -133,7 +133,7 @@ public class NetworkManagerCustomMatch : NetworkManager
         {
             GameObject g = Instantiate(floorDisk, pos, rot);
             g.GetComponent<FloorDiskMatch>().setTarget(dir);
-            g.GetComponent<FloorDiskMatch>().setOwner(player);
+            g.GetComponent<FloorDiskMatch>().setOwner(player, player == players[0]);
             NetworkServer.Spawn(g);
         }
     }

@@ -10,6 +10,8 @@ public class HexagonScript : NetworkBehaviour
 
     private bool isDestroyed;
     private float dissolve;
+
+    [HideInInspector] public bool ownerId;
     
     [ClientRpc]
     public void RpcActivate() {
@@ -28,8 +30,9 @@ public class HexagonScript : NetworkBehaviour
         holo.GetComponent<ParticleSystem>().Clear();
         spark.GetComponent<ParticleSystem>().Stop();
         spark.GetComponent<ParticleSystem>().Clear();
+        ownerId = emitter.position.x < 0;
 
-        if(emitter.position.x < 0) {
+        if(ownerId) {
             emitter.GetComponent<ParticleSystemRenderer>().material = emissionBlue;
             holo.GetComponent<ParticleSystemRenderer>().material = emissionBlue;
             GetComponent<MeshRenderer>().material = dissolveBlue;

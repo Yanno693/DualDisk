@@ -12,15 +12,17 @@ public class FloorDiskMatch : NetworkBehaviour
     private Rigidbody rb;
     private Vector3 target;
     private int nb_rebond; 
-    private GameObject owner; 
+    private GameObject owner;
+    private bool ownerId;
 
     // Start is called before the first frame update
     public void setTarget(in Vector3 _target) {
         this.target = _target;
     }
 
-    public void setOwner(in GameObject _owner) {
+    public void setOwner(in GameObject _owner, bool server = false) {
         this.owner = _owner;
+        this.ownerId = server;
     }
 
     void Start()
@@ -61,7 +63,7 @@ public class FloorDiskMatch : NetworkBehaviour
                 }
             }
         } else {
-            if(collision.gameObject.tag == "Hexagon") {
+            if(isServer && collision.gameObject.tag == "Hexagon" && collision.gameObject.GetComponent<HexagonScript>().ownerId != ownerId) {
                 Debug.Log("J'ai touché un hexagon");
                 collision.gameObject.GetComponent<HexagonScript>().RpcDestroy();
                 CmdDestroyDisk(gameObject);
