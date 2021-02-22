@@ -29,6 +29,9 @@ public class NetworkPlayerController : NetworkBehaviour
 
     [HideInInspector] public bool serverAllowMovement;
 
+    private float stepTime;
+    private bool step;
+
     private void FightingMovement()
     {
         float finalSpeed = movementSpeed;
@@ -51,6 +54,7 @@ public class NetworkPlayerController : NetworkBehaviour
                 if (Input.GetButton("Dodge") && !isDodging && serverAllowMovement && !isDead)
                 {
                     CmdRemoveCollider();
+                    CmdPlayDodge();
                     energy.GetComponent<Image>().fillAmount -= 0.5f;
                     dodgeTime = 0.0f;
                     isDodging = true;
@@ -83,9 +87,22 @@ public class NetworkPlayerController : NetworkBehaviour
 
         //characterController.SimpleMove(new Vector3(directionRotation.x, jump, directionRotation.y) * finalSpeed * Time.deltaTime * 500.0f);
         if(serverAllowMovement && !Menu.isPaused && !isDead) {
-            if(!isDodging)
+            if(!isDodging) {
                 characterController.Move(new Vector3(directionRotation.x, mouvementY, directionRotation.y) * finalSpeed * Time.deltaTime);
-            else
+                if(GetComponent<CharacterController>().isGrounded) {
+                    float speed = new Vector2(directionRotation.x, directionRotation.y).magnitude;
+
+                    if(
+                        (speed > 0.8 && stepTime > 0.25f) || 
+                        (speed > 0.5 && stepTime > 0.4f) ||
+                        (speed > 0.25 && stepTime > 0.7f)
+                        ) {
+                            stepTime = 0.0f;
+                            step = !step;
+                            CmdPlayFootStep(step);
+                    }
+                }
+            } else
                 characterController.Move(dodgeDirection);
         } else {
             characterController.Move(new Vector3(0, mouvementY, 0) * finalSpeed * Time.deltaTime);
@@ -334,9 +351,31 @@ public class NetworkPlayerController : NetworkBehaviour
         special.GetComponent<Image>().fillAmount = 0.0f;
     }
 
+    [Command]
+    public void CmdPlayFootStep(bool _step) {
+        RpcPlayFootStep(_step);
+    }
+
+    [ClientRpc]
+    public void RpcPlayFootStep(bool _step) {
+        GetComponents<AudioSource>()[_step?0:1].Play();
+    }
+
+    [Command]
+    public void CmdPlayDodge() {
+        RpcPlayDodge();
+    }
+
+    [ClientRpc]
+    public void RpcPlayDodge() {
+        GetComponents<AudioSource>()[2].Play();
+    }
+
     // Update is called once per frame
     void Update()
     {
+        stepTime += Time.deltaTime;
+        
         RpcUpdateDissolve();
 
         if(isInvincible) {

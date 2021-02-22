@@ -2528,7 +2528,7 @@ PrefabInstance:
     - target: {fileID: 247175782593865532, guid: ebc1d46607c18d54ebc8c5bff401cecd,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -7.4000854
+      value: -7.40007
       objectReference: {fileID: 0}
     - target: {fileID: 528845555576896963, guid: ebc1d46607c18d54ebc8c5bff401cecd,
         type: 3}
@@ -2693,7 +2693,7 @@ PrefabInstance:
     - target: {fileID: 6701401229497084674, guid: ebc1d46607c18d54ebc8c5bff401cecd,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -7.4000854
+      value: -7.40007
       objectReference: {fileID: 0}
     - target: {fileID: 6701401229497084675, guid: ebc1d46607c18d54ebc8c5bff401cecd,
         type: 3}
@@ -3221,6 +3221,61 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11a1e30d34577ad4493fa0d596ebd02e, type: 3}
+--- !u!1 &1832950797
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1832950799}
+  - component: {fileID: 1832950798}
+  m_Layer: 0
+  m_Name: AudioReverb
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!167 &1832950798
+AudioReverbZone:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832950797}
+  m_Enabled: 1
+  m_MinDistance: 0
+  m_MaxDistance: 40
+  m_ReverbPreset: 25
+  m_Room: -1000
+  m_RoomHF: -400
+  m_DecayTime: 17.23
+  m_DecayHFRatio: 0.56
+  m_Reflections: -1713
+  m_ReflectionsDelay: 0.02
+  m_Reverb: -613
+  m_ReverbDelay: 0.03
+  m_HFReference: 5000
+  m_Diffusion: 100
+  m_Density: 100
+  m_LFReference: 250
+  m_RoomLF: 0
+--- !u!4 &1832950799
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832950797}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1851687036
 GameObject:
   m_ObjectHideFlags: 0
