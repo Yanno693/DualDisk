@@ -46,8 +46,9 @@ public class NetworkPlayerController : NetworkBehaviour
         float angleBetween = Vector2.SignedAngle(Vector2.up, directionForward) * Mathf.Deg2Rad;
         Vector2 directionRotation = Vec2Rotate(directionInput, angleBetween);
 
-        
-        if(characterController.isGrounded) {
+
+        if (characterController.isGrounded)
+        {
             mouvementY = 0.0f;
             if (energy.GetComponent<Image>().fillAmount >= 0.5f)
             {
@@ -75,47 +76,56 @@ public class NetworkPlayerController : NetworkBehaviour
                     Vector3 r = new Vector3(directionForward.y, 0, -directionForward.x) * finalSpeed * Time.deltaTime * dir.x;
                     dodgeDirection = f + r;
                 }
-            }       
+            }
         }
         else
             mouvementY -= 5.5f * Time.deltaTime;
 
-        if(Input.GetButton("Jump") && characterController.isGrounded && !isDodging && !isDead) {
+        if (Input.GetButton("Jump") && characterController.isGrounded && !isDodging && !isDead)
+        {
             mouvementY = 1.8f;
             GetComponent<AnimationScript>().doJump();
         }
 
         //characterController.SimpleMove(new Vector3(directionRotation.x, jump, directionRotation.y) * finalSpeed * Time.deltaTime * 500.0f);
-        if(serverAllowMovement && !Menu.isPaused && !isDead) {
-            if(!isDodging) {
+        if (serverAllowMovement && !Menu.isPaused && !isDead)
+        {
+            if (!isDodging)
+            {
                 characterController.Move(new Vector3(directionRotation.x, mouvementY, directionRotation.y) * finalSpeed * Time.deltaTime);
-                if(GetComponent<CharacterController>().isGrounded) {
+                if (GetComponent<CharacterController>().isGrounded)
+                {
                     float speed = new Vector2(directionRotation.x, directionRotation.y).magnitude;
 
-                    if(
-                        (speed > 0.8 && stepTime > 0.25f) || 
+                    if (
+                        (speed > 0.8 && stepTime > 0.25f) ||
                         (speed > 0.5 && stepTime > 0.4f) ||
                         (speed > 0.25 && stepTime > 0.7f)
-                        ) {
-                            stepTime = 0.0f;
-                            step = !step;
-                            CmdPlayFootStep(step);
+                        )
+                    {
+                        stepTime = 0.0f;
+                        step = !step;
+                        CmdPlayFootStep(step);
                     }
                 }
-            } else
+            }
+            else
                 characterController.Move(dodgeDirection);
-        } else {
+        }
+        else
+        {
             characterController.Move(new Vector3(0, mouvementY, 0) * finalSpeed * Time.deltaTime);
         }
-            //characterController.Move(new Vector3(directionRotation.x * dodgeDirection.y, mouvementY, directionRotation.y * dodgeDirection.x) * finalSpeed * Time.deltaTime);
+        //characterController.Move(new Vector3(directionRotation.x * dodgeDirection.y, mouvementY, directionRotation.y * dodgeDirection.x) * finalSpeed * Time.deltaTime);
         //characterController.Sim
 
-        if(!isDodging && !isDead) {
+        if (!isDodging && !isDead)
+        {
             transform.rotation = Quaternion.Lerp(
                 transform.rotation,
                 Quaternion.LookRotation(new Vector3(directionForward.x, 0, directionForward.y)),
                 Time.deltaTime * rotationSpeed
-            );            
+            );
         }
     }
 
@@ -131,18 +141,21 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         base.OnStartAuthority();
 
-        if(isLocalPlayer) {
+        if (isLocalPlayer)
+        {
             initCamera();
         }
     }
 
     [Command]
-    public void CmdRemoveCollider(){
+    public void CmdRemoveCollider()
+    {
         RpcRemoveCollider();
     }
 
     [Command]
-    public void CmdResetCollider(){
+    public void CmdResetCollider()
+    {
         RpcResetCollider();
     }
 
@@ -162,17 +175,19 @@ public class NetworkPlayerController : NetworkBehaviour
         gameObject.layer = LayerMask.NameToLayer("Player");
     }
 
-    public void initCamera() {
+    public void initCamera()
+    {
 
         dissolve -= Time.deltaTime * 1.0f;
         transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Dissolve", dissolve);
         transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[1].SetFloat("_Dissolve", dissolve);
 
-        if(currentCamera is null) {
+        if (currentCamera is null)
+        {
             Camera cam = FindObjectOfType<Camera>();
             currentCamera = cam;
         }
-        
+
         //transform.position = new Vector3(0,5,0);
         Cinemachine.CinemachineFreeLook c = currentCamera.gameObject.GetComponent<Cinemachine.CinemachineFreeLook>();
         Debug.Log(c);
@@ -190,18 +205,19 @@ public class NetworkPlayerController : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-    
+
     // Start is called before the first frame update
     void Start()
     {
         dissolve = 1.0f;
         serverAllowMovement = true;
-        
-        if(currentCamera is null) {
+
+        if (currentCamera is null)
+        {
             Camera cam = FindObjectOfType<Camera>();
             currentCamera = cam;
         }
-        
+
         characterController = GetComponent<CharacterController>();
 
         movementSpeed = 15.0f;
@@ -219,8 +235,9 @@ public class NetworkPlayerController : NetworkBehaviour
 
         //currentCamera = FindObjectOfType<Camera>();
         Debug.Log(currentCamera);
-        
-        if(isLocalPlayer) {
+
+        if (isLocalPlayer)
+        {
             initCamera();
         }
     }
@@ -234,44 +251,49 @@ public class NetworkPlayerController : NetworkBehaviour
             var c = queue.Dequeue();
             if (c.name == aName)
                 return c;
-            foreach(Transform t in c)
+            foreach (Transform t in c)
                 queue.Enqueue(t);
         }
         return null;
     }
 
     [ClientRpc]
-    public void RpcChangeMaterials() {
-        Material[] mats = new Material[]{blueHead, blueBody};
+    public void RpcChangeMaterials()
+    {
+        Material[] mats = new Material[] { blueHead, blueBody };
         transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials = mats;
 
         GameObject d1 = FindDeepChild(transform, "D1").gameObject;
         GameObject d2 = FindDeepChild(transform, "D2").gameObject;
         GameObject d3 = FindDeepChild(transform, "D3").gameObject;
 
-        GameObject[] ds = new GameObject[3]{d1, d2, d3};
+        GameObject[] ds = new GameObject[3] { d1, d2, d3 };
 
-        foreach(GameObject d in ds) {
+        foreach (GameObject d in ds)
+        {
             d.transform.GetChild(1).GetComponent<MeshRenderer>().material = emissionBlue;
             d.transform.GetChild(2).GetComponent<MeshRenderer>().material = emissionBlue;
         }
     }
 
     [ClientRpc]
-    public void RpcForbidMouvement() {
+    public void RpcForbidMouvement()
+    {
         //if(isLocalPlayer) {
-            serverAllowMovement = false;
+        serverAllowMovement = false;
         //}
     }
 
     [ClientRpc]
-    public void RpcKillPlayer() {
+    public void RpcKillPlayer()
+    {
         GetComponent<AnimationScript>().doDie();
         isDead = true;
     }
 
     [ClientRpc]
-    public void RpcSetInvincible() {
+    public void RpcSetInvincible()
+    {
         isInvincible = true;
         damage = 1.5f;
 
@@ -280,28 +302,31 @@ public class NetworkPlayerController : NetworkBehaviour
     }
 
     [Command]
-    public void CmdRemoveInvincible() {
+    public void CmdRemoveInvincible()
+    {
         RpcRemoveInvincible();
     }
 
     [ClientRpc]
-    public void RpcRemoveInvincible() {
+    public void RpcRemoveInvincible()
+    {
         isInvincible = false;
         transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[0].SetInt("_Damage", 0);
         transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[1].SetInt("_Damage", 0);
     }
 
     [ClientRpc]
-    public void RpcAllowMouvement() {
+    public void RpcAllowMouvement()
+    {
         //if(isLocalPlayer) {
-            serverAllowMovement = true;
+        serverAllowMovement = true;
         //}
     }
 
     public void SetPause()
     {
         //RpcForbidMouvement();
-        
+
         GameObject.Find("UI").GetComponent<Menu>().ShowPauseMenu();
         isInPauseMenu = true;
     }
@@ -309,9 +334,15 @@ public class NetworkPlayerController : NetworkBehaviour
     public void ResumePause()
     {
         //RpcAllowMouvement();
-        
+
         GameObject.Find("UI").GetComponent<Menu>().HidePauseMenu();
         isInPauseMenu = false;
+    }
+
+    [ClientRpc]
+    public void Rematch()
+    {
+        GameObject.Find("UI").GetComponent<Menu>().HideVictoryMenu();
     }
 
 
@@ -322,17 +353,23 @@ public class NetworkPlayerController : NetworkBehaviour
         else
             ResumePause();
     }
-    
+
     [ClientRpc]
-    public void RpcUpdateDissolve() {
-        if(!isDead) {
-            if(dissolve < 1.0f) {
+    public void RpcUpdateDissolve()
+    {
+        if (!isDead)
+        {
+            if (dissolve < 1.0f)
+            {
                 dissolve += Time.deltaTime * 0.3f;
                 transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Dissolve", dissolve);
                 transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[1].SetFloat("_Dissolve", dissolve);
             }
-        } else {
-            if(dissolve > 0.0f) {
+        }
+        else
+        {
+            if (dissolve > 0.0f)
+            {
                 dissolve -= Time.deltaTime * 0.3f;
                 transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Dissolve", dissolve);
                 transform.Find("Ch44").GetComponent<SkinnedMeshRenderer>().materials[1].SetFloat("_Dissolve", dissolve);
@@ -351,23 +388,35 @@ public class NetworkPlayerController : NetworkBehaviour
         special.GetComponent<Image>().fillAmount = 0.0f;
     }
 
+    [ClientRpc]
+    public void EndGame()
+    {
+        GameObject.Find("UI").GetComponent<Menu>().ShowVictoryMenu();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     [Command]
-    public void CmdPlayFootStep(bool _step) {
+    public void CmdPlayFootStep(bool _step)
+    {
         RpcPlayFootStep(_step);
     }
 
     [ClientRpc]
-    public void RpcPlayFootStep(bool _step) {
-        GetComponents<AudioSource>()[_step?0:1].Play();
+    public void RpcPlayFootStep(bool _step)
+    {
+        GetComponents<AudioSource>()[_step ? 0 : 1].Play();
     }
 
     [Command]
-    public void CmdPlayDodge() {
+    public void CmdPlayDodge()
+    {
         RpcPlayDodge();
     }
 
     [ClientRpc]
-    public void RpcPlayDodge() {
+    public void RpcPlayDodge()
+    {
         GetComponents<AudioSource>()[2].Play();
     }
 
@@ -375,27 +424,31 @@ public class NetworkPlayerController : NetworkBehaviour
     void Update()
     {
         stepTime += Time.deltaTime;
-        
+
         RpcUpdateDissolve();
 
-        if(isInvincible) {
+        if (isInvincible)
+        {
             damage -= Time.deltaTime;
-            if(damage < 0) {
+            if (damage < 0)
+            {
                 CmdRemoveInvincible();
             }
         }
-        
-        if(isLocalPlayer) {
+
+        if (isLocalPlayer)
+        {
             FightingMovement();
 
-            if(isDodging) {
+            if (isDodging)
+            {
                 dodgeTime += Time.deltaTime;
-                if(dodgeTime > 1.1f)
+                if (dodgeTime > 1.1f)
                 {
                     isDodging = false;
                     CmdResetCollider();
                 }
-                    
+
             }
 
             if (Input.GetButtonDown("Cancel"))
@@ -403,11 +456,12 @@ public class NetworkPlayerController : NetworkBehaviour
                 ControlPauseMenu();
             }
 
-            if(energy.GetComponent<Image>().fillAmount < 1)
+            if (energy.GetComponent<Image>().fillAmount < 1)
                 energy.GetComponent<Image>().fillAmount += Time.deltaTime * energy_speed;
 
             if (special.GetComponent<Image>().fillAmount < 1)
                 special.GetComponent<Image>().fillAmount = GetComponent<PlayerThrowMatch>().delaySpecial / 12.0f;
         }
     }
+
 }

@@ -14,6 +14,7 @@ public class Menu : MonoBehaviour
     public GameObject menu;
     public GameObject panel_credits;
     public GameObject hud;
+    public GameObject victory;
 
     public TMP_InputField join_input;
     public NetworkManagerCustomMatch manager;
@@ -26,6 +27,27 @@ public class Menu : MonoBehaviour
     {
         isPaused = false;
         cam_transform = cam.transform;
+    }
+
+    public void ShowVictoryMenu()
+    {
+        victory.SetActive(true);
+    }
+
+    public void OnRematch()
+    {
+        manager.startMatch();
+
+        NetworkPlayerController[] players = FindObjectsOfType<NetworkPlayerController>();
+        foreach (NetworkPlayerController p in players)
+        {
+            p.Rematch();
+        }
+    }
+
+    public void HideVictoryMenu()
+    {
+        victory.SetActive(false);
     }
 
     public void OnHostGame()

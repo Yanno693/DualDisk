@@ -34,8 +34,7 @@ public class DataManager : NetworkBehaviour
 
     [ClientRpc] 
     public void RpcOrangeWin() {
-            GameObject p2s = GameObject.Find("Countdown");
-            p2s.GetComponent<TextMeshProUGUI>().fontSize /= 8;
+            GameObject p2s = GameObject.Find("Winner");
             p2s.GetComponent<TextMeshProUGUI>().text = "orange wins";
     }
 
@@ -46,9 +45,14 @@ public class DataManager : NetworkBehaviour
 
     [ClientRpc] 
     public void RpcBlueWin() {
-            GameObject p2s = GameObject.Find("Countdown");
-            p2s.GetComponent<TextMeshProUGUI>().fontSize /= 8;
+            GameObject p2s = GameObject.Find("Winner");
             p2s.GetComponent<TextMeshProUGUI>().text = "blue wins";
+    }
+
+    [ClientRpc]
+    public void RpcResetWinner()
+    {
+        GameObject.Find("Winner").GetComponent<TextMeshProUGUI>().text = "";
     }
 
     [ClientRpc]

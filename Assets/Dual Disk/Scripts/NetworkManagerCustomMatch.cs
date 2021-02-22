@@ -15,6 +15,7 @@ public class NetworkManagerCustomMatch : NetworkManager
     private bool hasStarted;
     private bool roundHasStarted;
     private bool isPlayerDead;
+    private bool isGameFinished;
     private float playerDeadTime;
     private float serverStartTime;
     private float roundStartTime;
@@ -50,6 +51,7 @@ public class NetworkManagerCustomMatch : NetworkManager
         hasStarted = false;
         isPlayerDead = false;
         roundHasStarted = false;
+        isGameFinished = false;
 
         NetworkServer.RegisterHandler<PlayerConnectMessage>(OnCreatePlayer);
     }
@@ -90,8 +92,15 @@ public class NetworkManagerCustomMatch : NetworkManager
                 players[0].GetComponent<NetworkPlayerController>().RpcAllowMouvement();
                 players[1].GetComponent<NetworkPlayerController>().RpcAllowMouvement();
             }
+            else if(!isGameFinished)
+            {
+                isGameFinished = true;
+                players[0].GetComponent<NetworkPlayerController>().EndGame();
+            }
         }
     }
+
+    
 
     // Attribue un prefab de Joueur à la personne qui se connecte
     void OnCreatePlayer(NetworkConnection conn, PlayerConnectMessage message)
@@ -249,6 +258,7 @@ public class NetworkManagerCustomMatch : NetworkManager
         datas.InitMatchData();
     }
 
+    
     public void startMatch() {
         players = GameObject.FindGameObjectsWithTag("Player");
         datas = FindObjectOfType<DataManager>();
@@ -259,6 +269,10 @@ public class NetworkManagerCustomMatch : NetworkManager
         players[1].GetComponent<NetworkPlayerController>().ResetSpecial();
 
         hasStarted = true;
+        isGameFinished = false;
+
+        datas.RpcResetWinner();
+
         Debug.Log("Le match peut commencer !");
         spawnPlayers();
         initMatchData();
