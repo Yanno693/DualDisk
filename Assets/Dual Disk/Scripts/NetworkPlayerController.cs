@@ -345,6 +345,8 @@ public class NetworkPlayerController : NetworkBehaviour
     public void Rematch()
     {
         GameObject.Find("UI").GetComponent<Menu>().HideVictoryMenu();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
 
