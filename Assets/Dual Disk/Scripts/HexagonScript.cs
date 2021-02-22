@@ -48,9 +48,11 @@ public class HexagonScript : NetworkBehaviour
         //GetComponent<MeshRenderer>().enabled = false;
         isDestroyed = true;
         GetComponent<MeshCollider>().enabled = false;
+        GetComponent<AudioSource>().Play();
         transform.Find("Emitter").GetComponent<ParticleSystem>().Play();
         transform.Find("HoloEmitter").GetComponent<ParticleSystem>().Play();
         transform.Find("SparkEmitter").GetComponent<ParticleSystem>().Play();
+
     }
     
     // Start is called before the first frame update
