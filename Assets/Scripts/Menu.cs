@@ -10,6 +10,7 @@ public class Menu : MonoBehaviour
     public GameObject cam;
     public GameObject panel_principale;
     public GameObject panel_join;
+    public GameObject panel_control;
     public GameObject paused_menu;
     public GameObject menu;
     public GameObject panel_credits;
@@ -32,6 +33,18 @@ public class Menu : MonoBehaviour
     public void ShowVictoryMenu()
     {
         victory.SetActive(true);
+    }
+
+    public void OnControl()
+    {
+        panel_principale.SetActive(false);
+        panel_control.SetActive(true);
+    }
+
+    public void OnReturnControl()
+    {
+        panel_control.SetActive(false);
+        panel_principale.SetActive(true);
     }
 
     public void OnRematch()
