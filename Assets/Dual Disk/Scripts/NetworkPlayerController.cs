@@ -199,6 +199,8 @@ public class NetworkPlayerController : NetworkBehaviour
         c.GetComponent<Cinemachine.CinemachineFreeLook>().m_XAxis.m_InputAxisName = "Mouse X";
         c.GetComponent<Cinemachine.CinemachineFreeLook>().m_YAxis.m_InputAxisName = "Mouse Y";
 
+        GameObject.Find("Menu Song").GetComponent<AudioSource>().Stop();
+
         c.m_LookAt = transform.GetChild(0).transform;
         c.m_Follow = transform;
 
@@ -464,4 +466,10 @@ public class NetworkPlayerController : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    public void RpcPlayGameSong() {
+        if(isLocalPlayer) {
+            GameObject.Find("Game Song").GetComponent<AudioSource>().Play();
+        }
+    }
 }

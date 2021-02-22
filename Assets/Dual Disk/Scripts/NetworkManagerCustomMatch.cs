@@ -268,6 +268,9 @@ public class NetworkManagerCustomMatch : NetworkManager
         players[0].GetComponent<NetworkPlayerController>().ResetSpecial();
         players[1].GetComponent<NetworkPlayerController>().ResetSpecial();
 
+        players[0].GetComponent<NetworkPlayerController>().RpcPlayGameSong();
+        players[1].GetComponent<NetworkPlayerController>().RpcPlayGameSong();
+
         hasStarted = true;
         isGameFinished = false;
 
