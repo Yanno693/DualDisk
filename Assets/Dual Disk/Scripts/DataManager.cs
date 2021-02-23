@@ -25,7 +25,7 @@ public class DataManager : NetworkBehaviour
     public TextMeshProUGUI p2OrangeScoreText;
     public TextMeshProUGUI p1BlueScoreText;
     public TextMeshProUGUI p2BlueScoreText;
-    public static readonly int nbRound = 3;
+    public static readonly int nbRound = 5;
 
     [Command] 
     public void CmdOrangeWin() {
