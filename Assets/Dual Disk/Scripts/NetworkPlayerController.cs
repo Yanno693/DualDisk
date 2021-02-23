@@ -119,7 +119,7 @@ public class NetworkPlayerController : NetworkBehaviour
         //characterController.Move(new Vector3(directionRotation.x * dodgeDirection.y, mouvementY, directionRotation.y * dodgeDirection.x) * finalSpeed * Time.deltaTime);
         //characterController.Sim
 
-        if (!isDodging && !isDead)
+        if (!isDodging && !isDead && serverAllowMovement)
         {
             transform.rotation = Quaternion.Lerp(
                 transform.rotation,
@@ -198,6 +198,7 @@ public class NetworkPlayerController : NetworkBehaviour
 
         c.GetComponent<Cinemachine.CinemachineFreeLook>().m_XAxis.m_InputAxisName = "Mouse X";
         c.GetComponent<Cinemachine.CinemachineFreeLook>().m_YAxis.m_InputAxisName = "Mouse Y";
+        c.GetComponent<Cinemachine.CinemachineFreeLook>().Priority = 100;
 
         GameObject.Find("Menu Song").GetComponent<AudioSource>().Stop();
 
@@ -472,6 +473,9 @@ public class NetworkPlayerController : NetworkBehaviour
     public void RpcPlayGameSong() {
         if(isLocalPlayer) {
             GameObject.Find("Game Song").GetComponent<AudioSource>().Play();
+            GameObject.Find("Fall VCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().m_LookAt = transform;
+            GameObject.Find("BlueWin VCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().Priority = 1;
+            GameObject.Find("OrangeWin VCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().Priority = 1;
         }
     }
 }

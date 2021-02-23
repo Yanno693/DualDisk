@@ -200,6 +200,12 @@ public class NetworkManagerCustomMatch : NetworkManager
         players[1].GetComponent<PlayerThrowMatch>().RpcMove(new Vector3(20, 3, 0), Quaternion.Euler(-1, 0, 0));
         players[1].GetComponent<NetworkPlayerController>().RefillEnergy();
         players[1].GetComponent<NetworkPlayerController>().ResetSpecial();
+
+        if(datas.p1Score == DataManager.nbRound)
+            players[0].GetComponent<AnimationScript>().RpcTaunt();
+
+        if(datas.p2Score == DataManager.nbRound)
+            players[1].GetComponent<AnimationScript>().RpcTaunt();
     }
 
     public void resetHealth() {
@@ -277,8 +283,8 @@ public class NetworkManagerCustomMatch : NetworkManager
         datas.RpcResetWinner();
 
         Debug.Log("Le match peut commencer !");
-        spawnPlayers();
         initMatchData();
         initMaterials();
+        spawnPlayers();
     }
 }

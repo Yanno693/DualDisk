@@ -36,6 +36,7 @@ public class DataManager : NetworkBehaviour
     public void RpcOrangeWin() {
             GameObject p2s = GameObject.Find("Winner");
             p2s.GetComponent<TextMeshProUGUI>().text = "orange wins";
+            GameObject.Find("OrangeWin VCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().Priority = 1000;
     }
 
     [Command] 
@@ -47,6 +48,7 @@ public class DataManager : NetworkBehaviour
     public void RpcBlueWin() {
             GameObject p2s = GameObject.Find("Winner");
             p2s.GetComponent<TextMeshProUGUI>().text = "blue wins";
+            GameObject.Find("BlueWin VCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().Priority = 1000;
     }
 
     [ClientRpc]

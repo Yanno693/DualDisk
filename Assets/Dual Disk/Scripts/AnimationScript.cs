@@ -32,8 +32,8 @@ public class AnimationScript : NetworkBehaviour
         if(animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death1" || animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death2") {
             GetComponent<NetworkAnimator>().ResetTrigger("Die");
             GetComponent<NetworkAnimator>().ResetTrigger("Die2");
-            GetComponent<NetworkAnimator>().SetTrigger("Spawn");
         }
+        GetComponent<NetworkAnimator>().SetTrigger("Spawn");
     }
 
 
@@ -72,6 +72,18 @@ public class AnimationScript : NetworkBehaviour
             animator.SetLayerWeight(animator.GetLayerIndex("Throw Layer"), throwWeight);
             animator.SetLayerWeight(animator.GetLayerIndex("Jump Layer"), jumpWeight);
             animator.SetBool("Fall", transform.position.y < -5);
+        }
+    }
+
+    [ClientRpc]
+    public void RpcTaunt() {
+        if(isLocalPlayer) {
+            GetComponent<NetworkAnimator>().ResetTrigger("Spawn");
+            int rand = (1 + (((int)Time.time) % 20));
+            Debug.Log(rand);
+
+            GetComponent<NetworkAnimator>().SetTrigger("Taunt" + rand.ToString());
+            //GetComponent<NetworkAnimator>().SetTrigger("Taunt1");
         }
     }
 }

@@ -41,6 +41,10 @@ public class PlayerThrowMatch : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcMove(Vector3 pos, Quaternion rot) {
+        
+        this.GetComponent<NetworkPlayerController>().currentCamera.GetComponent<Cinemachine.CinemachineFreeLook>().Priority = 100;
+        GameObject.Find("Fall VCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().Priority = 0;
+        
         fallen = false;
         delaySpecial = 0.0f;
         this.GetComponent<NetworkPlayerController>().mouvementY = 0.0f;
@@ -51,13 +55,16 @@ public class PlayerThrowMatch : NetworkBehaviour {
         this.GetComponent<NetworkPlayerController>().special.GetComponent<Image>().fillAmount = 0;
         this.GetComponent<AnimationScript>().doAlive();
 
+        Quaternion _rot = Quaternion.LookRotation(-pos.normalized, Vector3.up);
+
         this.GetComponent<CharacterController>().enabled = false;
-        GetComponent<NetworkTransform>().ServerTeleport(pos, rot);
+        GetComponent<NetworkTransform>().ServerTeleport(pos, _rot);
         transform.position = pos;
-        transform.rotation = rot;
+        transform.rotation = _rot;
         this.GetComponent<CharacterController>().enabled = true;
         this.GetComponent<NetworkPlayerController>().CmdResetCollider();
         CmdHideDisplayDisk(4);
+
 
         setCamera(rot);
     }
@@ -225,6 +232,7 @@ public class PlayerThrowMatch : NetworkBehaviour {
 
                 if(!fallen) {
                     fallen = true;
+                    GameObject.Find("Fall VCam").GetComponent<Cinemachine.CinemachineVirtualCamera>().Priority = 1000;
                     CmdHasFallen(gameObject);
                 }
             }
